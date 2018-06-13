@@ -79,18 +79,18 @@
 
 
 
-<meta name="description" content="新建页面 hexo new &amp;quot;文章name&amp;quot;或者hexo n &amp;quot;文章name&amp;quot;  草稿 hexo publish=hexo p  生成 hexo generate=hero g  启动服务器预览 hexo server=hexo s  部署 hexo deploy=hexo d">
+<meta name="description" content="新建页面 hexo new &amp;quot;文章name&amp;quot;或者hexo n &amp;quot;文章name&amp;quot;  草稿 hexo publish=hexo p  生成 hexo generate=hero g  启动服务器预览 hexo server=hexo s  部署 hexo deploy=hexo d或者与g合并写成hexo d -g，有时候需要先用hexo clean清除c">
 <meta name="keywords" content="hexo">
 <meta property="og:type" content="article">
 <meta property="og:title" content="hexo使用总结">
 <meta property="og:url" content="http://yoursite.com/2018/06/06/hexo使用总结/index.html">
 <meta property="og:site_name" content="icestrawberryxjw">
-<meta property="og:description" content="新建页面 hexo new &amp;quot;文章name&amp;quot;或者hexo n &amp;quot;文章name&amp;quot;  草稿 hexo publish=hexo p  生成 hexo generate=hero g  启动服务器预览 hexo server=hexo s  部署 hexo deploy=hexo d">
+<meta property="og:description" content="新建页面 hexo new &amp;quot;文章name&amp;quot;或者hexo n &amp;quot;文章name&amp;quot;  草稿 hexo publish=hexo p  生成 hexo generate=hero g  启动服务器预览 hexo server=hexo s  部署 hexo deploy=hexo d或者与g合并写成hexo d -g，有时候需要先用hexo clean清除c">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2018-06-06T05:17:57.598Z">
+<meta property="og:updated_time" content="2018-06-13T12:05:19.455Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="hexo使用总结">
-<meta name="twitter:description" content="新建页面 hexo new &amp;quot;文章name&amp;quot;或者hexo n &amp;quot;文章name&amp;quot;  草稿 hexo publish=hexo p  生成 hexo generate=hero g  启动服务器预览 hexo server=hexo s  部署 hexo deploy=hexo d">
+<meta name="twitter:description" content="新建页面 hexo new &amp;quot;文章name&amp;quot;或者hexo n &amp;quot;文章name&amp;quot;  草稿 hexo publish=hexo p  生成 hexo generate=hero g  启动服务器预览 hexo server=hexo s  部署 hexo deploy=hexo d或者与g合并写成hexo d -g，有时候需要先用hexo clean清除c">
 
 
 
@@ -352,7 +352,8 @@
       
 
       
-        <ul>
+         <!--test文章摘要：转载请注明文章出处-->
+<ul>
 <li><p>新建页面</p>
 <p><code>hexo new &quot;文章name&quot;</code>或者<code>hexo n &quot;文章name&quot;</code></p>
 </li>
@@ -366,7 +367,14 @@
 <p><code>hexo server</code>=<code>hexo s</code></p>
 </li>
 <li><p>部署</p>
-<p><code>hexo deploy</code>=<code>hexo d</code></p>
+<p><code>hexo deploy</code>=<code>hexo d</code>或者与g合并写成<code>hexo d -g</code>，有时候需要先用<code>hexo clean</code>清除cache file</p>
+</li>
+<li><p>显示草稿</p>
+<p><code>hexo --draft</code></p>
+</li>
+<li><p>设置多标签：</p>
+<p>tags后面这样写</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">tags: [标签1,标签2,标签3]</div></pre></td></tr></table></figure>
 </li>
 </ul>
 
@@ -408,6 +416,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/06/13/Git与GitHub总结笔记-参考《GitHub入门与实践》/" rel="prev" title="Git与GitHub总结笔记-参考《GitHub入门与实践》">
+                Git与GitHub总结笔记-参考《GitHub入门与实践》 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -475,7 +487,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-count">5</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -485,10 +497,10 @@
               
               
               <div class="site-state-item site-state-categories">
-                
-                  <span class="site-state-item-count">1</span>
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">2</span>
                   <span class="site-state-item-name">分类</span>
-                
+                </a>
               </div>
             
 
@@ -496,10 +508,10 @@
               
               
               <div class="site-state-item site-state-tags">
-                
-                  <span class="site-state-item-count">2</span>
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">3</span>
                   <span class="site-state-item-name">标签</span>
-                
+                </a>
               </div>
             
 
