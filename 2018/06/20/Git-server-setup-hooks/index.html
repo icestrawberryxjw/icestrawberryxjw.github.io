@@ -79,18 +79,18 @@
 
 
 
-<meta name="description" content="12345678910111213141516171819202122232425262728293031323334353637383940414243# 安装Gityum install git# 创建git用户组和用户groupadd gitadduser gitpasswd git# 创建Git证书登录cd /homemkdir gitcd /home/gitmkdir .sshchmod">
+<meta name="description" content="首先安装Git  1yum install git  创建git用户组和用户  123groupadd gitadduser gitpasswd git  创建Git证书登录  1234567cd /homemkdir gitcd /home/gitmkdir .sshchmod 700 .sshtouch .ssh/authorized_keyschmod 600 .ssh/authorize">
 <meta name="keywords" content="Git">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Git服务器带自动化部署安装过程">
 <meta property="og:url" content="http://yoursite.com/2018/06/20/Git-server-setup-hooks/index.html">
 <meta property="og:site_name" content="icestrawberryxjw">
-<meta property="og:description" content="12345678910111213141516171819202122232425262728293031323334353637383940414243# 安装Gityum install git# 创建git用户组和用户groupadd gitadduser gitpasswd git# 创建Git证书登录cd /homemkdir gitcd /home/gitmkdir .sshchmod">
+<meta property="og:description" content="首先安装Git  1yum install git  创建git用户组和用户  123groupadd gitadduser gitpasswd git  创建Git证书登录  1234567cd /homemkdir gitcd /home/gitmkdir .sshchmod 700 .sshtouch .ssh/authorized_keyschmod 600 .ssh/authorize">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2018-06-20T13:18:27.887Z">
+<meta property="og:updated_time" content="2018-06-20T13:26:34.260Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Git服务器带自动化部署安装过程">
-<meta name="twitter:description" content="12345678910111213141516171819202122232425262728293031323334353637383940414243# 安装Gityum install git# 创建git用户组和用户groupadd gitadduser gitpasswd git# 创建Git证书登录cd /homemkdir gitcd /home/gitmkdir .sshchmod">
+<meta name="twitter:description" content="首先安装Git  1yum install git  创建git用户组和用户  123groupadd gitadduser gitpasswd git  创建Git证书登录  1234567cd /homemkdir gitcd /home/gitmkdir .sshchmod 700 .sshtouch .ssh/authorized_keyschmod 600 .ssh/authorize">
 
 
 
@@ -363,7 +363,41 @@
       
 
       
-        <figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#</span> 安装Git</div><div class="line">yum install git</div><div class="line"></div><div class="line"><span class="meta">#</span> 创建git用户组和用户</div><div class="line">groupadd git</div><div class="line">adduser git</div><div class="line">passwd git</div><div class="line"></div><div class="line"><span class="meta">#</span> 创建Git证书登录</div><div class="line">cd /home</div><div class="line">mkdir git</div><div class="line">cd /home/git</div><div class="line">mkdir .ssh</div><div class="line">chmod 700 .ssh</div><div class="line">touch .ssh/authorized_keys</div><div class="line">chmod 600 .ssh/authorized_keys</div><div class="line"></div><div class="line"><span class="meta">#</span> 然后把自己的客户端的Git公钥加入authorized_keys文件中</div><div class="line"></div><div class="line"><span class="meta">#</span> 初始化Git仓库</div><div class="line">cd /home</div><div class="line">mkdir gitrepo</div><div class="line">chown git:git gitrepo</div><div class="line">cd gitrepo</div><div class="line">git init --bare test.git # 初始化裸仓库</div><div class="line">chown -R git:git /home/gitrepo</div><div class="line">Initialized empty Git repository in /home/gitrepo/test.git/</div><div class="line">chown -R git:git test.git</div><div class="line"></div><div class="line"><span class="meta">#</span> 克隆仓库</div><div class="line">git clone git@Server_IP:/home/gitrepo/test.git</div><div class="line"></div><div class="line"><span class="meta">#</span> 编写自动更新钩子</div><div class="line">cd /home/gitrepo/test.git/hooks/</div><div class="line">vim post-receive</div><div class="line">添加以下内容</div><div class="line"><span class="meta">#</span>!/bin/sh </div><div class="line">git --work-tree=your_work_dir --git-dir=/root/gitrepo/test.git checkout -f</div><div class="line">保存退出</div><div class="line"></div><div class="line">chmod +x post-receive # 给钩子文件添加可执行权限</div><div class="line"></div><div class="line">如果push之后工作部署路径看不到代码的话，就手动sh一下post-receive一下，然后之后就都有了（这个问题纠结了我半天）。</div></pre></td></tr></table></figure>
+        <ul>
+<li>首先安装Git</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">yum install git</div></pre></td></tr></table></figure>
+<ul>
+<li>创建git用户组和用户</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">groupadd git</div><div class="line">adduser git</div><div class="line">passwd git</div></pre></td></tr></table></figure>
+<ul>
+<li>创建Git证书登录</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">cd /home</div><div class="line">mkdir git</div><div class="line">cd /home/git</div><div class="line">mkdir .ssh</div><div class="line">chmod 700 .ssh</div><div class="line">touch .ssh/authorized_keys</div><div class="line">chmod 600 .ssh/authorized_keys</div></pre></td></tr></table></figure>
+<ul>
+<li>然后把自己的客户端的Git公钥加入authorized_keys文件中，一行一个</li>
+<li>初始化Git仓库</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">cd /home</div><div class="line">mkdir gitrepo</div><div class="line">chown git:git gitrepo</div><div class="line">cd gitrepo</div><div class="line">git init --bare test.git # 初始化裸仓库</div><div class="line">chown -R git:git /home/gitrepo</div><div class="line">Initialized empty Git repository in /home/gitrepo/test.git/</div><div class="line">chown -R git:git test.git</div></pre></td></tr></table></figure>
+<ul>
+<li>克隆仓库</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">git clone git@Server_IP:/home/gitrepo/test.git</div></pre></td></tr></table></figure>
+<ul>
+<li>编写自动更新钩子</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">cd /home/gitrepo/test.git/hooks/</div><div class="line">vim post-receive</div></pre></td></tr></table></figure>
+<ul>
+<li>添加以下内容</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#</span>!/bin/sh </div><div class="line">git --work-tree=your_work_dir --git-dir=/root/gitrepo/test.git checkout -f</div></pre></td></tr></table></figure>
+<ul>
+<li>保存退出</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">chmod +x post-receive # 给钩子文件添加可执行权限</div></pre></td></tr></table></figure>
+<p>如果push之后工作部署路径看不到代码的话，就手动运行一下post-receive一下，然后之后push的就都有了（这个问题纠结了我半天）。</p>
+
       
     </div>
     
