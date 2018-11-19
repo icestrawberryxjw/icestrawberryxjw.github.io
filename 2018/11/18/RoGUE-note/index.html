@@ -79,18 +79,18 @@
 
 
 
-<meta name="description" content="版权声明：本文为 Jiawei Xu 原创文章，未经允许不得转载。2018-11-18 1. 问题描述和论文概括RDMA为用户态提供了直接访问、在应用程序的buffer中传输数据的能力。RDMA旁路了开销较高的系统调用，在硬件上进行组包和包解析操作。允许单向操作，凭借一边的连接可以在硬件上完全处理而不需要主机软件的参与。因此RDMA相比于TCP/IP网络提高了端到端的时延和CPU占用。 RNIC：">
+<meta name="description" content="版权声明：本文为 Jiawei Xu 于2018年11月15日所写，未经允许不得转载。 1. 问题描述和论文概括RDMA为用户态提供了直接访问、在应用程序的buffer中传输数据的能力。RDMA旁路了开销较高的系统调用，在硬件上进行组包和包解析操作。允许单向操作，凭借一边的连接可以在硬件上完全处理而不需要主机软件的参与。因此RDMA相比于TCP/IP网络提高了端到端的时延和CPU占用。 RNIC：">
 <meta name="keywords" content="论文阅读笔记">
 <meta property="og:type" content="article">
 <meta property="og:title" content="RoGUE_RDMA over Generic Unconverged Ethernet(SoCC&#39;18)笔记">
 <meta property="og:url" content="http://yoursite.com/2018/11/18/RoGUE-note/index.html">
 <meta property="og:site_name" content="icestrawberryxjw">
-<meta property="og:description" content="版权声明：本文为 Jiawei Xu 原创文章，未经允许不得转载。2018-11-18 1. 问题描述和论文概括RDMA为用户态提供了直接访问、在应用程序的buffer中传输数据的能力。RDMA旁路了开销较高的系统调用，在硬件上进行组包和包解析操作。允许单向操作，凭借一边的连接可以在硬件上完全处理而不需要主机软件的参与。因此RDMA相比于TCP/IP网络提高了端到端的时延和CPU占用。 RNIC：">
+<meta property="og:description" content="版权声明：本文为 Jiawei Xu 于2018年11月15日所写，未经允许不得转载。 1. 问题描述和论文概括RDMA为用户态提供了直接访问、在应用程序的buffer中传输数据的能力。RDMA旁路了开销较高的系统调用，在硬件上进行组包和包解析操作。允许单向操作，凭借一边的连接可以在硬件上完全处理而不需要主机软件的参与。因此RDMA相比于TCP/IP网络提高了端到端的时延和CPU占用。 RNIC：">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2018-11-18T05:10:05.633Z">
+<meta property="og:updated_time" content="2018-11-19T07:00:50.054Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="RoGUE_RDMA over Generic Unconverged Ethernet(SoCC&#39;18)笔记">
-<meta name="twitter:description" content="版权声明：本文为 Jiawei Xu 原创文章，未经允许不得转载。2018-11-18 1. 问题描述和论文概括RDMA为用户态提供了直接访问、在应用程序的buffer中传输数据的能力。RDMA旁路了开销较高的系统调用，在硬件上进行组包和包解析操作。允许单向操作，凭借一边的连接可以在硬件上完全处理而不需要主机软件的参与。因此RDMA相比于TCP/IP网络提高了端到端的时延和CPU占用。 RNIC：">
+<meta name="twitter:description" content="版权声明：本文为 Jiawei Xu 于2018年11月15日所写，未经允许不得转载。 1. 问题描述和论文概括RDMA为用户态提供了直接访问、在应用程序的buffer中传输数据的能力。RDMA旁路了开销较高的系统调用，在硬件上进行组包和包解析操作。允许单向操作，凭借一边的连接可以在硬件上完全处理而不需要主机软件的参与。因此RDMA相比于TCP/IP网络提高了端到端的时延和CPU占用。 RNIC：">
 
 
 
@@ -352,7 +352,7 @@
       
 
       
-        <p>版权声明：本文为 Jiawei Xu 原创文章，未经允许不得转载。2018-11-18</p>
+        <p>版权声明：本文为 Jiawei Xu 于2018年11月15日所写，未经允许不得转载。</p>
 <h3 id="1-问题描述和论文概括"><a href="#1-问题描述和论文概括" class="headerlink" title="1. 问题描述和论文概括"></a>1. 问题描述和论文概括</h3><p>RDMA为用户态提供了直接访问、在应用程序的buffer中传输数据的能力。RDMA旁路了开销较高的系统调用，在硬件上进行组包和包解析操作。允许单向操作，凭借一边的连接可以在硬件上完全处理而不需要主机软件的参与。因此RDMA相比于TCP/IP网络提高了端到端的时延和CPU占用。</p>
 <p>RNIC：RDMA网卡</p>
 <p>PFC：使用backpressure-based congestion control来给RDMA提供无损网络。PFC是的交换机或者主机当他们的buffer占用超过一定的阀值产生pause frame，然后让发送方节流。有了PFC之后，丢包只会发生在少见的bit损坏上，RNIC就可以用简单的硬件重传方案来恢复。</p>
@@ -513,8 +513,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/06/20/Git-server-setup-hooks/" rel="next" title="Git服务器带自动化部署安装过程">
-                <i class="fa fa-chevron-left"></i> Git服务器带自动化部署安装过程
+              <a href="/2018/11/15/fpgas-for-dummies-note/" rel="next" title="fpgas_for_dummies_note">
+                <i class="fa fa-chevron-left"></i> fpgas_for_dummies_note
               </a>
             
           </div>
@@ -598,7 +598,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-count">9</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -609,7 +609,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-count">6</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -620,7 +620,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-count">5</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
