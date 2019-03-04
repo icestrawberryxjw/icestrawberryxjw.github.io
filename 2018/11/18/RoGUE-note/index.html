@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="icestrawberryxjw">
 <meta property="og:description" content="版权声明：本文为 Jiawei Xu 于2018年11月15日所写，未经允许不得转载。 1. 问题描述和论文概括RDMA为用户态提供了直接访问、在应用程序的buffer中传输数据的能力。RDMA旁路了开销较高的系统调用，在硬件上进行组包和包解析操作。允许单向操作，凭借一边的连接可以在硬件上完全处理而不需要主机软件的参与。因此RDMA相比于TCP/IP网络提高了端到端的时延和CPU占用。 RNIC：">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2018-11-19T07:00:50.054Z">
+<meta property="og:updated_time" content="2018-11-19T08:17:50.963Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="RoGUE_RDMA over Generic Unconverged Ethernet(SoCC&#39;18)笔记">
 <meta name="twitter:description" content="版权声明：本文为 Jiawei Xu 于2018年11月15日所写，未经允许不得转载。 1. 问题描述和论文概括RDMA为用户态提供了直接访问、在应用程序的buffer中传输数据的能力。RDMA旁路了开销较高的系统调用，在硬件上进行组包和包解析操作。允许单向操作，凭借一边的连接可以在硬件上完全处理而不需要主机软件的参与。因此RDMA相比于TCP/IP网络提高了端到端的时延和CPU占用。 RNIC：">
@@ -458,12 +458,12 @@
 <p>RoGUE必须能够在UC传输中的RTT测量期间处理分组丢失。 在批次i的测量之前到达的批次j &gt; i的RTT测量被解释为批次i中的分组丢失，并且拥塞窗口积性减小。 当所有未完成的RTT测量都被丢弃时，RoGUE使用超时来重试RTT的采样。 超时后，RoGUE将拥塞窗口重置为其初始大小，并且在成功对RTT进行采样之前不会将新批次排入队列。</p>
 <p><strong>A4:</strong></p>
 <p>当QP发生error state，使用shadow QP mechanism</p>
-<h3 id="3-实验"><a href="#3-实验" class="headerlink" title="3. 实验"></a>3. 实验</h3><p>32台servers，用10Gbps的RNIC相连。</p>
+<h3 id="4-实验"><a href="#4-实验" class="headerlink" title="4. 实验"></a>4. 实验</h3><p>32台servers，用10Gbps的RNIC相连。</p>
 <ol>
 <li>测量CPU利用率。同时使用QP或TCP流来驱动测试平台中两台机器之间的线速流量（“客户端”发送到“服务器”），比较DCTCP、RoCE和RoGUE、RC和UC传输类型、比较 READ 和WRITE verb的情况。 对于READ，服务器将数据发送到客户端。 我们使用dstat来测量客户端和服务器上每10秒（平均5次运行）的CPU利用率。并且还对DCTCP先进行了优化。</li>
 <li>从一个长时间运行的流开始，单独发送，然后添加/删除最多4个额外的流，一次一个。 测量10Gbps网络中RoGUE平均1s间隔的所有五个流的瞬时吞吐量，以及40Gbps网络中RoGUE模拟器的0.1s间隔的瞬时吞吐量。</li>
 </ol>
-<h3 id="4-实验结果和结论"><a href="#4-实验结果和结论" class="headerlink" title="4. 实验结果和结论"></a>4. 实验结果和结论</h3><p>角度是低能耗（低CPU）+去PFC，对性能的要求是较RoCE持平</p>
+<h3 id="5-实验结果和结论"><a href="#5-实验结果和结论" class="headerlink" title="5. 实验结果和结论"></a>5. 实验结果和结论</h3><p>角度是低能耗（低CPU）+去PFC，对性能的要求是较RoCE持平</p>
 <p>没有讨论实现上的开销；忽略了UC的RTT测量时延</p>
 <h3 id="最后：背景知识"><a href="#最后：背景知识" class="headerlink" title="最后：背景知识"></a>最后：背景知识</h3><p>使用RDMA，用户空间应用程序调用内核来分配NIC队列，然后建立与远程计算机的连接。 应用程序使用客户端库直接与RNIC连接，以将RDMA verbs发送到队列。</p>
 <p>最常用的verb是READ，WRITE，SEND和RECV。 READ从远程主机的内存中获取数据，WRITE将数据传输到远程主机的内存中。 READ和WRITE被认为是“单方面的”，因为它们只需要发送端的主机活动：接收方的RNIC在没有软件参与的情况下处理请求。SEND是“双面的”：它们将消息传送到远程主机，其中软件将RECV verbs排入队列以接收消息。 verbs中的数据大小通常可达2GB。 WRITE_WITH_IMM和SEND_WITH_IMM是WRITE和SEND的变体，它们携带额外的4字节的立即数据，可由远程主机上的软件读取。</p>
@@ -663,7 +663,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-问题描述和论文概括"><span class="nav-number">1.</span> <span class="nav-text">1. 问题描述和论文概括</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-设计难点和挑战"><span class="nav-number">2.</span> <span class="nav-text">2. 设计难点和挑战</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-RoGUE设计"><span class="nav-number">3.</span> <span class="nav-text">3. RoGUE设计</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-实验"><span class="nav-number">4.</span> <span class="nav-text">3. 实验</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-实验结果和结论"><span class="nav-number">5.</span> <span class="nav-text">4. 实验结果和结论</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#最后：背景知识"><span class="nav-number">6.</span> <span class="nav-text">最后：背景知识</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Reference"><span class="nav-number">7.</span> <span class="nav-text">Reference</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-问题描述和论文概括"><span class="nav-number">1.</span> <span class="nav-text">1. 问题描述和论文概括</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-设计难点和挑战"><span class="nav-number">2.</span> <span class="nav-text">2. 设计难点和挑战</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-RoGUE设计"><span class="nav-number">3.</span> <span class="nav-text">3. RoGUE设计</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-实验"><span class="nav-number">4.</span> <span class="nav-text">4. 实验</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-实验结果和结论"><span class="nav-number">5.</span> <span class="nav-text">5. 实验结果和结论</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#最后：背景知识"><span class="nav-number">6.</span> <span class="nav-text">最后：背景知识</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Reference"><span class="nav-number">7.</span> <span class="nav-text">Reference</span></a></li></ol></div>
             
 
           </div>
@@ -683,7 +683,7 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; 2017 &mdash; <span itemprop="copyrightYear">2018</span>
+        <div class="copyright">&copy; 2017 &mdash; <span itemprop="copyrightYear">2019</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>
