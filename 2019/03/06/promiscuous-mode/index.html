@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="hexo," />
+  <meta name="keywords" content="网卡," />
 
 
 
@@ -79,18 +79,21 @@
 
 
 
-<meta name="description" content="新建页面 hexo new &amp;quot;文章name&amp;quot;或者hexo n &amp;quot;文章name&amp;quot;  草稿 hexo publish=hexo p  生成 hexo generate=hero g  启动服务器预览 hexo server=hexo s  部署 hexo deploy=hexo d或者与g合并写成hexo d -g，有时候需要先用hexo clean清除c">
-<meta name="keywords" content="hexo">
+<meta name="description" content="版权声明：本文为 Jiawei Xu 于2018年6月9日所写，未经允许不得转载。 tcpdump的一个副作用就是可以让网卡进入混杂模式。每次tcpdump，都会在/var/log/messages里看到这样：  实际上，网卡是否处于PROMISC模式，ifconfig（ip link show也是如此）并不是最直接的判断依据，换句话说就是ifconfig能看到PROMISC标记表示一定处于混杂模">
+<meta name="keywords" content="网卡">
 <meta property="og:type" content="article">
-<meta property="og:title" content="hexo使用总结">
-<meta property="og:url" content="http://yoursite.com/2018/06/06/hexo使用总结/index.html">
+<meta property="og:title" content="关于网卡的混杂模式">
+<meta property="og:url" content="http://yoursite.com/2019/03/06/promiscuous-mode/index.html">
 <meta property="og:site_name" content="icestrawberryxjw">
-<meta property="og:description" content="新建页面 hexo new &amp;quot;文章name&amp;quot;或者hexo n &amp;quot;文章name&amp;quot;  草稿 hexo publish=hexo p  生成 hexo generate=hero g  启动服务器预览 hexo server=hexo s  部署 hexo deploy=hexo d或者与g合并写成hexo d -g，有时候需要先用hexo clean清除c">
+<meta property="og:description" content="版权声明：本文为 Jiawei Xu 于2018年6月9日所写，未经允许不得转载。 tcpdump的一个副作用就是可以让网卡进入混杂模式。每次tcpdump，都会在/var/log/messages里看到这样：  实际上，网卡是否处于PROMISC模式，ifconfig（ip link show也是如此）并不是最直接的判断依据，换句话说就是ifconfig能看到PROMISC标记表示一定处于混杂模">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2018-06-13T12:05:19.455Z">
+<meta property="og:image" content="https://icestrawberryxjwme-1255869739.cos.ap-shanghai.myqcloud.com/blogPic/2018060907.png">
+<meta property="og:image" content="https://icestrawberryxjwme-1255869739.cos.ap-shanghai.myqcloud.com/blogPic/2018060906.png">
+<meta property="og:updated_time" content="2019-03-06T14:15:19.081Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="hexo使用总结">
-<meta name="twitter:description" content="新建页面 hexo new &amp;quot;文章name&amp;quot;或者hexo n &amp;quot;文章name&amp;quot;  草稿 hexo publish=hexo p  生成 hexo generate=hero g  启动服务器预览 hexo server=hexo s  部署 hexo deploy=hexo d或者与g合并写成hexo d -g，有时候需要先用hexo clean清除c">
+<meta name="twitter:title" content="关于网卡的混杂模式">
+<meta name="twitter:description" content="版权声明：本文为 Jiawei Xu 于2018年6月9日所写，未经允许不得转载。 tcpdump的一个副作用就是可以让网卡进入混杂模式。每次tcpdump，都会在/var/log/messages里看到这样：  实际上，网卡是否处于PROMISC模式，ifconfig（ip link show也是如此）并不是最直接的判断依据，换句话说就是ifconfig能看到PROMISC标记表示一定处于混杂模">
+<meta name="twitter:image" content="https://icestrawberryxjwme-1255869739.cos.ap-shanghai.myqcloud.com/blogPic/2018060907.png">
 
 
 
@@ -120,13 +123,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2018/06/06/hexo使用总结/"/>
+  <link rel="canonical" href="http://yoursite.com/2019/03/06/promiscuous-mode/"/>
 
 
 
 
 
-  <title>hexo使用总结 | icestrawberryxjw</title>
+  <title>关于网卡的混杂模式 | icestrawberryxjw</title>
   
 
 
@@ -263,7 +266,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/06/hexo使用总结/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/06/promiscuous-mode/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="icestrawberryxjw">
@@ -280,7 +283,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">hexo使用总结</h1>
+          <h1 class="post-title" itemprop="name headline">关于网卡的混杂模式</h1>
         
 
         <div class="post-meta">
@@ -292,8 +295,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-06T11:19:29+08:00">
-                2018-06-06
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-06T22:13:00+08:00">
+                2019-03-06
               </time>
             
 
@@ -315,8 +318,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/使用总结/" itemprop="url" rel="index">
-                    <span itemprop="name">使用总结</span>
+                  <a href="/categories/网络/" itemprop="url" rel="index">
+                    <span itemprop="name">网络</span>
                   </a>
                 </span>
 
@@ -352,31 +355,35 @@
       
 
       
-         <!--test文章摘要：转载请注明文章出处-->
+        <p>版权声明：本文为 Jiawei Xu 于2018年6月9日所写，未经允许不得转载。</p>
+<p>tcpdump的一个副作用就是可以让网卡进入混杂模式。每次tcpdump，都会在/var/log/messages里看到这样：</p>
+<p><img src="https://icestrawberryxjwme-1255869739.cos.ap-shanghai.myqcloud.com/blogPic/2018060907.png" alt="2018060907"></p>
+<p>实际上，网卡是否处于PROMISC模式，ifconfig（ip link show也是如此）并不是最直接的判断依据，换句话说就是ifconfig能看到PROMISC标记表示一定处于混杂模式，但处于混杂模式并不一定能看到PROMISC标记。内核判断网卡是否处于混杂模式是看<code>/sys/class/net/ifname/flags</code>的值，如果置位了0x100，则处于混杂模式。</p>
+<p><img src="https://icestrawberryxjwme-1255869739.cos.ap-shanghai.myqcloud.com/blogPic/2018060906.png" alt="2018060906"></p>
 <ul>
-<li><p>新建页面</p>
-<p><code>hexo new &quot;文章name&quot;</code>或者<code>hexo n &quot;文章name&quot;</code></p>
-</li>
-<li><p>草稿</p>
-<p><code>hexo publish</code>=<code>hexo p</code></p>
-</li>
-<li><p>生成</p>
-<p><code>hexo generate</code>=<code>hero g</code></p>
-</li>
-<li><p>启动服务器预览</p>
-<p><code>hexo server</code>=<code>hexo s</code></p>
-</li>
-<li><p>部署</p>
-<p><code>hexo deploy</code>=<code>hexo d</code>或者与g合并写成<code>hexo d -g</code>，有时候需要先用<code>hexo clean</code>清除cache file</p>
-</li>
-<li><p>显示草稿</p>
-<p><code>hexo --draft</code></p>
-</li>
-<li><p>设置多标签：</p>
-<p>tags后面这样写</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">tags: [标签1,标签2,标签3]</div></pre></td></tr></table></figure>
-</li>
+<li><strong>混杂模式的ifconfig和ip link show都按看不到的问题</strong></li>
 </ul>
+<p><a href="http://seclists.org/bugtraq/2002/Jul/302有这样的解释" target="_blank" rel="external">http://seclists.org/bugtraq/2002/Jul/302有这样的解释</a></p>
+<blockquote>
+<p>This is a well knwon issue and C. Grenier and I have understood why<br>very recently. In fact, this due to the changing of the handling of<br>promiscuous mode in kernel space.</p>
+<p>With kernel 2.0, one had to perform the following to set the interface<br>to promiscuous mode:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&gt; <span class="built_in">strncpy</span>(ifr.ifr_name, <span class="string">"eth0"</span>, IFNAMSIZ);</div><div class="line">&gt; ioctl(sock, SIOCGIFFLAGS, &amp;ifr);</div><div class="line">&gt; ifr.ifr_flags |= IFF_PROMISC;</div><div class="line">&gt; ioctl(sock, SIOCSIFFLAGS, &amp;ifr);</div><div class="line">&gt;</div></pre></td></tr></table></figure>
+</blockquote>
+<p>&gt;</p>
+<blockquote>
+<p>The trouble was that the promiscuous mode was handled by a flag.  Each<br>time a process sets this mode, the flag is set. But if another process<br>removes this mode, the flag is cleared. Rather bad behavior.</p>
+<p>Since kernel 2.2, a processus must ask to enter in a membership of<br>process (setsockopt(…, PACKET_ADD_MEMBERSHIP,…)) using the<br>interface in promiscuous mode. A counter is then increased. One a<br>process of the membership does not need the promiscuous mode anymore,<br>it drops the membership (setsockopt(…, PACKET_DROP_MEMBERSHIP, …))<br>the counter is decreased, and promiscuous mode is disabled as soon as<br>the counter is 0. </p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">&gt; <span class="class"><span class="keyword">struct</span> <span class="title">packet_mreq</span> <span class="title">mr</span>;</span></div><div class="line">&gt; ...</div><div class="line">&gt; <span class="built_in">memset</span>(mr,<span class="number">0</span>,<span class="keyword">sizeof</span>(mr));</div><div class="line">&gt; mr.mr_ifindex = ifr.ifr_ifindex;</div><div class="line">&gt; mr.mr_type =  PACKET_MR_PROMISC;</div><div class="line">&gt; setsockopt(sock, SOL_PACKET, PACKET_ADD_MEMBERSHIP, (<span class="keyword">char</span> *)&amp;mr, <span class="keyword">sizeof</span>(mr));</div><div class="line">&gt;</div></pre></td></tr></table></figure>
+</blockquote>
+<p>&gt;</p>
+<blockquote>
+<p>The call to ioctl(SIOCGIFFLAGS) reports only promiscuous mode sets by<br>ioctl(SIOCSIFFLAGS).</p>
+</blockquote>
+<p>参考资料：</p>
+<ol>
+<li><a href="https://ieevee.com/tech/2016/11/24/promisc.html" target="_blank" rel="external">https://ieevee.com/tech/2016/11/24/promisc.html</a></li>
+<li><a href="http://seclists.org/bugtraq/2002/Jul/302" target="_blank" rel="external">http://seclists.org/bugtraq/2002/Jul/302</a></li>
+</ol>
 
       
     </div>
@@ -394,7 +401,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/hexo/" rel="tag"># hexo</a>
+            <a href="/tags/网卡/" rel="tag"># 网卡</a>
           
         </div>
       
@@ -407,8 +414,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/03/22/Voyager-Complete-Container-State-Migration-ICDCS-2017/" rel="next" title="Voyager-Complete Container State Migration (ICDCS 2017)">
-                <i class="fa fa-chevron-left"></i> Voyager-Complete Container State Migration (ICDCS 2017)
+              <a href="/2019/03/06/CplusPrimerChapter9-mem-manage-note/" rel="next" title="C++内存模型">
+                <i class="fa fa-chevron-left"></i> C++内存模型
               </a>
             
           </div>
@@ -417,8 +424,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2018/06/13/Git与GitHub总结笔记-参考《GitHub入门与实践》/" rel="prev" title="Git与GitHub总结笔记-参考《GitHub入门与实践》">
-                Git与GitHub总结笔记-参考《GitHub入门与实践》 <i class="fa fa-chevron-right"></i>
+              <a href="/2019/03/06/ip-conf-file-inconsistency/" rel="prev" title="解决Centos网卡IP和配置文件不符的问题">
+                解决Centos网卡IP和配置文件不符的问题 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>

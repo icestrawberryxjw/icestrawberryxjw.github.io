@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="C++," />
+  <meta name="keywords" content="网卡," />
 
 
 
@@ -79,18 +79,24 @@
 
 
 
-<meta name="description" content="C++ primer 一书第九章的内存模型 笔记。—— Jiawei Xu 2019年3月6日  变量内存管理-存储持续性C++使用三种（在C++11中是四种）不同的方案来存储数据，这些方案的区别在于数据保留在内存中的时间。  自动存储持续性（栈）： 在函数定义中声明的变量（包括函数参数）的存储持续性为自动的。它们在程序开始执行其所属的函数或代码块时被创建，在执行完函数或代码块时，它们的内存被释放">
-<meta name="keywords" content="C++">
+<meta name="description" content="版权声明：本文为 Jiawei Xu 于2018年6月9日所写，未经允许不得转载。 昨天发现连不上自己的服务器了，以为是网卡没起来或者网线被别人重插了，后来看了一下发现网卡起来了，ip也配的是对的，再ifconfig下，发现居然网卡em1用的是网卡em2的配置文件。如图：  并且，修改em2的配置文件中的ip，em1会相应变化，推测em1和em2互用了对方的配置文件= =。 使用nmcli查看，确">
+<meta name="keywords" content="网卡">
 <meta property="og:type" content="article">
-<meta property="og:title" content="C++内存模型">
-<meta property="og:url" content="http://yoursite.com/2019/03/06/CplusPrimerChapter9-mem-manage-note/index.html">
+<meta property="og:title" content="解决Centos网卡IP和配置文件不符的问题">
+<meta property="og:url" content="http://yoursite.com/2019/03/06/ip-conf-file-inconsistency/index.html">
 <meta property="og:site_name" content="icestrawberryxjw">
-<meta property="og:description" content="C++ primer 一书第九章的内存模型 笔记。—— Jiawei Xu 2019年3月6日  变量内存管理-存储持续性C++使用三种（在C++11中是四种）不同的方案来存储数据，这些方案的区别在于数据保留在内存中的时间。  自动存储持续性（栈）： 在函数定义中声明的变量（包括函数参数）的存储持续性为自动的。它们在程序开始执行其所属的函数或代码块时被创建，在执行完函数或代码块时，它们的内存被释放">
+<meta property="og:description" content="版权声明：本文为 Jiawei Xu 于2018年6月9日所写，未经允许不得转载。 昨天发现连不上自己的服务器了，以为是网卡没起来或者网线被别人重插了，后来看了一下发现网卡起来了，ip也配的是对的，再ifconfig下，发现居然网卡em1用的是网卡em2的配置文件。如图：  并且，修改em2的配置文件中的ip，em1会相应变化，推测em1和em2互用了对方的配置文件= =。 使用nmcli查看，确">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-03-06T14:01:46.578Z">
+<meta property="og:image" content="https://icestrawberryxjwme-1255869739.cos.ap-shanghai.myqcloud.com/blogPic/2018060901.png">
+<meta property="og:image" content="https://icestrawberryxjwme-1255869739.cos.ap-shanghai.myqcloud.com/blogPic/2018060902.png">
+<meta property="og:image" content="https://icestrawberryxjwme-1255869739.cos.ap-shanghai.myqcloud.com/blogPic/2018060903.png">
+<meta property="og:image" content="https://icestrawberryxjwme-1255869739.cos.ap-shanghai.myqcloud.com/blogPic/2018060904.jpg">
+<meta property="og:image" content="https://icestrawberryxjwme-1255869739.cos.ap-shanghai.myqcloud.com/blogPic/2018060905.jpg">
+<meta property="og:updated_time" content="2019-03-06T14:17:13.972Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="C++内存模型">
-<meta name="twitter:description" content="C++ primer 一书第九章的内存模型 笔记。—— Jiawei Xu 2019年3月6日  变量内存管理-存储持续性C++使用三种（在C++11中是四种）不同的方案来存储数据，这些方案的区别在于数据保留在内存中的时间。  自动存储持续性（栈）： 在函数定义中声明的变量（包括函数参数）的存储持续性为自动的。它们在程序开始执行其所属的函数或代码块时被创建，在执行完函数或代码块时，它们的内存被释放">
+<meta name="twitter:title" content="解决Centos网卡IP和配置文件不符的问题">
+<meta name="twitter:description" content="版权声明：本文为 Jiawei Xu 于2018年6月9日所写，未经允许不得转载。 昨天发现连不上自己的服务器了，以为是网卡没起来或者网线被别人重插了，后来看了一下发现网卡起来了，ip也配的是对的，再ifconfig下，发现居然网卡em1用的是网卡em2的配置文件。如图：  并且，修改em2的配置文件中的ip，em1会相应变化，推测em1和em2互用了对方的配置文件= =。 使用nmcli查看，确">
+<meta name="twitter:image" content="https://icestrawberryxjwme-1255869739.cos.ap-shanghai.myqcloud.com/blogPic/2018060901.png">
 
 
 
@@ -120,13 +126,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2019/03/06/CplusPrimerChapter9-mem-manage-note/"/>
+  <link rel="canonical" href="http://yoursite.com/2019/03/06/ip-conf-file-inconsistency/"/>
 
 
 
 
 
-  <title>C++内存模型 | icestrawberryxjw</title>
+  <title>解决Centos网卡IP和配置文件不符的问题 | icestrawberryxjw</title>
   
 
 
@@ -263,7 +269,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/06/CplusPrimerChapter9-mem-manage-note/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/06/ip-conf-file-inconsistency/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="icestrawberryxjw">
@@ -280,7 +286,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">C++内存模型</h1>
+          <h1 class="post-title" itemprop="name headline">解决Centos网卡IP和配置文件不符的问题</h1>
         
 
         <div class="post-meta">
@@ -292,7 +298,7 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-06T21:58:50+08:00">
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-06T22:15:45+08:00">
                 2019-03-06
               </time>
             
@@ -315,8 +321,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/C/" itemprop="url" rel="index">
-                    <span itemprop="name">C++</span>
+                  <a href="/categories/网络/" itemprop="url" rel="index">
+                    <span itemprop="name">网络</span>
                   </a>
                 </span>
 
@@ -352,80 +358,61 @@
       
 
       
-        <p><em>C++ primer</em> 一书第九章的内存模型 笔记。—— Jiawei Xu 2019年3月6日</p>
-<hr>
-<h4 id="变量内存管理-存储持续性"><a href="#变量内存管理-存储持续性" class="headerlink" title="变量内存管理-存储持续性"></a>变量内存管理-存储持续性</h4><p>C++使用三种（在C++11中是四种）不同的方案来存储数据，这些方案的区别在于数据保留在内存中的时间。</p>
+        <p>版权声明：本文为 Jiawei Xu 于2018年6月9日所写，未经允许不得转载。</p>
+<p>昨天发现连不上自己的服务器了，以为是网卡没起来或者网线被别人重插了，后来看了一下发现网卡起来了，ip也配的是对的，再ifconfig下，发现居然网卡em1用的是网卡em2的配置文件。如图：</p>
+<p><img src="https://icestrawberryxjwme-1255869739.cos.ap-shanghai.myqcloud.com/blogPic/2018060901.png" alt="2018060901"></p>
+<p>并且，修改em2的配置文件中的ip，em1会相应变化，推测em1和em2互用了对方的配置文件= =。</p>
+<p>使用nmcli查看，确实如此：</p>
+<p><img src="https://icestrawberryxjwme-1255869739.cos.ap-shanghai.myqcloud.com/blogPic/2018060902.png" alt="2018060902"></p>
+<p>在别的正常的服务器上，是这样的：</p>
+<p><img src="https://icestrawberryxjwme-1255869739.cos.ap-shanghai.myqcloud.com/blogPic/2018060903.png" alt="2018060903"></p>
+<p><strong>验证了我的猜测，下面是解决方案：</strong></p>
+<p>Red Hat Enterprise Linux 7 与 CentOS 7 中默认的网络服务由 NetworkManager 提供，这是动态控制及配置网络的守护进程，它用于保持当前网络设备及连接处于工作状态，同时也支持传统的 ifcfg 类型的配置文件。可以用<strong>命令行工具 nmcli</strong> 来控制 NetworkManager，相应的也有一个<strong>图形化的配置工具nmtui</strong>。</p>
+<p>NetworkManager 可以用于以下类型的连接：Ethernet，VLANS，Bridges，Bonds，Teams，Wi-Fi，mobile boradband（如移动3G）以及 IP-over-InfiniBand。针对与这些网络类型，NetworkManager 可以配置他们的网络别名，IP 地址，静态路由，DNS，VPN连接以及很多其它的特殊参数。 </p>
+<p><strong>一些Network Manager中的概念：</strong></p>
 <ul>
-<li><p><strong>自动存储持续性</strong>（栈）：</p>
-<p>在函数定义中声明的变量（包括函数参数）的存储持续性为自动的。它们在程序开始执行其所属的函数或代码块时被创建，在执行完函数或代码块时，它们的内存被释放。<strong>C++有两种存储持续性为自动的变量</strong>：局部变量和register关键字。</p>
-</li>
-<li><p><strong>静态存储持续性</strong>（全局变量/外部变量、static）：</p>
-<p>在函数定义外定义的变量和使用关键字static定义的变量的存储持续性都为<strong>静态</strong>。它们在程序整个运行过程中都存在。</p>
-<p><strong>C++有三种存储持续性为静态的变量</strong>，在整个程序执行期间存在，未被初始化的静态变量默认为0，静态数组和结果的每个元素和成员的所有位都置为0，这种变量被称为<strong>零初始化</strong>的(zero-initialized)：</p>
-<ul>
-<li><strong>外部链接性external linkage</strong>：可在其他文件中访问，格式：代码块外面声明</li>
-<li><strong>内部链接性internal linkage</strong>：只能在当前文件中访问，格式：代码块外面声明+static限定符</li>
-<li><strong>无连接性static linkage</strong>：只能在当前函数或代码块中访问，格式：代码块内声明+static限定符</li>
+<li>device叫网络接口，是物理设备</li>
+<li>connection是连接，偏重于逻辑设置</li>
+<li>多个connection可以应用到同一个device，但同一时间只能启用其中一个connection。这样的好处是针对一个网络接口，我们可以设置多个网络连接，比如静态IP和动态IP，再根据需要up相应的connection。</li>
 </ul>
+<p><strong>nmcli的具体用法可以参考manpage，下面是常用命令（单词可以不写全，比如connection写成con）：</strong></p>
+<ol>
+<li><p>nmcli modifiy命令修改网卡的具体配置，实际上编辑的是<code>/etc/sysconfig/network-scripts/ifcfg-*</code>文件。在不想使用该文件时，可以通过delete删除对应的连接：<code>nmcli connection delete ens3</code>。默认情况下通过nmcli add 或 modify的操作只是修改了配置文件，并不会立即生效，想要生效启用，需要通过“nmcli conn up 接口名” 来启用对应的配置。 </p>
 </li>
-<li><p><strong>动态存储持续性</strong>（堆/自由存储）：</p>
-<p>用new运算符分配的内存将一直存在，直到使用delete运算符将其释放或程序结束为止。这种内存的持续性为动态，有时候被称为自由存储(free store)或堆(heap)。</p>
+<li><p><code>nmcli -p con up em1 ifname em1</code>修改设备连接的配置文件，<strong>只用这个来修改网卡使用的配置文件的话重启网卡之后就会无效！</strong>因为默认的网卡和配置文件之间的连接没有删除。</p>
 </li>
-<li><p><strong>线程存储持续性</strong>（C++11、并行编程、thread_local）</p>
-<p>如果变量使用关键字<strong>thread_local</strong>声明的，则其生命周期与所属的线程一样长，并行编程的内容。thread_local之于线程，犹如常规静态变量之于整个程序。</p>
+<li><p><code>nmcli -p connection show &quot;em1&quot;</code> 显示em1连接配置集详情 </p>
 </li>
-</ul>
-<h4 id="链接性（linkage）"><a href="#链接性（linkage）" class="headerlink" title="链接性（linkage）"></a>链接性（linkage）</h4><p>描述了名称如何在不同单元间共享。链接性在外部的名称可在文件间共享，链接性在内部的名称只能由一个文件中的函数共享。</p>
-<h4 id="作用域（scope）"><a href="#作用域（scope）" class="headerlink" title="作用域（scope）"></a>作用域（scope）</h4><p>文件作用域（作用域为全局）：从定义位置到文件结尾之间可用。</p>
-<p>局部作用域（自动变量，automatic variable）：局部。</p>
-<p>静态变量的作用域：全局还是局部取决于如何被定义。</p>
-<p>函数原型作用域(function prototype scope)中使用的名称只在包含参数列表的括号内可用。</p>
-<p>类中声明的成员的作用域：整个类。</p>
-<p>在名称空间中声明的变量的作用域为整个名称空间，全局作用域是名称空间作用域的特例。</p>
-<h4 id="Auto"><a href="#Auto" class="headerlink" title="Auto"></a>Auto</h4><p>C和C++11之前，用于显式地指出变量为自动存储</p>
-<p>C++11中，用于自动类型推断</p>
-<h4 id="寄存器变量Register"><a href="#寄存器变量Register" class="headerlink" title="寄存器变量Register"></a>寄存器变量Register</h4><p>C和C++11之前，建议编译器使用CPU寄存器来存储自动变量，旨在提高访问变量的速度；</p>
-<p>C++11中，用于显式地指出变量是自动的，作用域为代码块，在代码块中声明，无链接性。</p>
-<h4 id="初始化"><a href="#初始化" class="headerlink" title="初始化"></a>初始化</h4><ul>
-<li><p>静态初始化=零初始化+常量表达式初始化（sizeof运算符也包括）</p>
-<p>在编译器处理文件时初始化</p>
+<li><p><code>nmcli -p -m multiline -f all con show</code> 显示NetworkManager 连接配置集</p>
 </li>
-<li><p>动态初始化：</p>
-<p>在编译后初始化</p>
+<li><p><code>nmcli -f name,autoconnect c s</code></p>
 </li>
-<li><p>C++新增关键字constexpr</p>
-<p>创建常量表达式的方式</p>
+<li><p><code>nmcli connection show</code>查看当前的连接，terminal里未启用的是黄色，启用的是绿色。</p>
 </li>
-</ul>
-<h4 id="外部-全局变量的C-单定义规则-One-Definition-Rule-ODR"><a href="#外部-全局变量的C-单定义规则-One-Definition-Rule-ODR" class="headerlink" title="外部/全局变量的C++单定义规则(One Definition Rule, ODR)"></a>外部/全局变量的C++单定义规则(One Definition Rule, ODR)</h4><p><strong>外部变量</strong>：链接性为外部的变量，存储持续性为静态，作用域为整个文件。也称全局变量。</p>
-<p>如果要在多个文件中使用外部变量，只需要在一个文件里包含定义，但是其他文件使用的时候都要用extern声明。</p>
-<p>两种外部变量声明的方式：</p>
-<ul>
-<li><p>定义声明/定义defining declaring/definition（给变量分配存储空间）</p>
+<li><p><code>nmcli connection show --active</code>仅查看活跃连接</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">[root@localhost ~]# nmcli connection show --active</div><div class="line">名称    UUID                                  类型            设备   </div><div class="line">em2     c67732e2-be50-4589-ad40-4537da423795  802-3-ethernet  em1    </div><div class="line">virbr0  4c0b2e32-9e55-472f-8693-03fda6c95847  bridge          virbr0`</div></pre></td></tr></table></figure>
 </li>
-<li><p>引用申明/声明 referencing declaration/declaration（不给变量分配存储空间）</p>
-<p>方法：在变量前面用<strong>关键字extern</strong>，且不进行初始化（两个条件都要满足，否则声明为定义，会分配存储空间）</p>
-<p><strong>C++中的作用域解析运算符(::)</strong>：放在变量名前，该运算符表示使用变量的全局版本（更安全，不依赖于作用域）</p>
-</li>
-</ul>
-<p>在多文件程序中，可以在一个文件（且只能在一个文件）定义一个外部变量，使用它的其他文件必须使用关键字extern声明它。</p>
-<h4 id="存储说明符"><a href="#存储说明符" class="headerlink" title="存储说明符"></a>存储说明符</h4><ul>
-<li>auto（C++11之后不再是说明符）</li>
-<li>register</li>
-<li>static</li>
-<li>extern</li>
-<li>thread_local（C++11新增）</li>
-<li>mutable：即使结构（或类）变量为const，其某个成员也可以被修改，</li>
-</ul>
-<h4 id="CV-限定符"><a href="#CV-限定符" class="headerlink" title="CV-限定符"></a>CV-限定符</h4><ul>
-<li>const：在C++中，const限定符对默认存储类型有影响。在默认情况下全局变量的链接性为外部的，但const全局变量的链接性为内部的。<ul>
-<li>在C++下，全局const定义就像是使用了static说明符一样。</li>
-<li>可以使用extern关键字覆盖默认的内部链接性<code>extern const int states=50;</code>，鉴于单个const在多个文件间共享，因此只有一个文件可对其进行初始化。</li>
-<li>在函数或代码块中声明const时，作用域为代码块。</li>
-</ul>
-</li>
-<li>volatile：即使程序代码没有对内存单元进行修改，其值也可能发生变化。作用是为了改善编译器的优化能力。例如，假设编译器发现，程序在几条语句中两次使用了某个变量的值，则编译器可能不是让程序查找这个值两次，而是将这个值缓存到寄存器中。这种优化假设变量的值在这两次使用之间不会变化。如果不将变量声明为volatile。则编译器将进行这种优化；将变量声明为volatile，相当于告诉编译器不要进行这种优化。</li>
-</ul>
+</ol>
+<h3 id="解决步骤："><a href="#解决步骤：" class="headerlink" title="解决步骤："></a><strong>解决步骤</strong>：</h3><p>一开始以为网卡的配置是单纯找对应网卡名称的配置文件，现在才知道是将网卡设备和逻辑接口连接起来，然后使用逻辑接口的配置文件。</p>
+<p>首先使用<code>nmcli connection delete CONNECTION_NAME</code>命令</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">nmcli connection delete em2     //把网卡em1和配置文件ifcfg-em2的连接断开</div></pre></td></tr></table></figure>
+<p>下一步，把网卡em1和接口em1匹配起来：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">nmcli connection add ifname em1 con-name em1 type ethernet //建立网卡em1和逻辑接口em1的连接</div></pre></td></tr></table></figure>
+<p>然后，使用<code>nmcli connection show</code>就可以看到增加了一条连接信息，显示黄色说明还没有启动。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">nmcli connection delete be36eaf2011de-43ab-9ff6-58b32796a444 //删掉下图绿色下面一行的未启动的网卡em2和逻辑接口em1的连接</div><div class="line">nmcli connection add ifname em2 con-name em2 type ethernet //建立网卡em2和逻辑接口em2的连接</div></pre></td></tr></table></figure>
+<p><img src="https://icestrawberryxjwme-1255869739.cos.ap-shanghai.myqcloud.com/blogPic/2018060904.jpg" alt="2018060904"></p>
+<p>但是，因为刚刚建立网卡em1和逻辑接口em1的时候，网卡em2和逻辑接口em1的连接还没删除，所以在/etc/sysconfig/network-scripts里面会出现ifcfg-em1-1，把文件名改成ifcfg-em1，需要在里面配置好静态ip、网关等信息然后保存。</p>
+<p>再次用<code>nmcli connection show</code>查看，发现网卡em1和逻辑接口em1连接了，网卡em2和逻辑接口em2连接了，原来的连接断开了。但是em1的连接没有启用（红色）。</p>
+<p>用nmtui编辑连接后，ifcfg文件也会有相应的改动；手工修改ifcfg后，nmtui中也能看到。<br>但是，<strong>不论用nmtui还是直接修改ifcfg文件，想让新的配置生效，需要load连接配置文件并重新up连接。</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">nmcli con load /etc/sysconfig/network-scripts/ifcfg-em1</div><div class="line">nmcli con load /etc/sysconfig/network-scripts/ifcfg-em2</div><div class="line">nmcli con up em1</div></pre></td></tr></table></figure>
+<p>再次用<code>nmcli connection show</code>查看，发现网卡em1和逻辑接口em1连接启用了（显示绿色）</p>
+<p><img src="https://icestrawberryxjwme-1255869739.cos.ap-shanghai.myqcloud.com/blogPic/2018060905.jpg" alt="2018060905"></p>
+<p>服务器重启之后，配置依然有效，至此解决。</p>
+<p>参考资料：</p>
+<ol>
+<li><a href="https://www.cnblogs.com/panblack/p/Centos7-WhatsNew-02-networking.html" target="_blank" rel="external">https://www.cnblogs.com/panblack/p/Centos7-WhatsNew-02-networking.html</a></li>
+<li>nmcli(1) Linux man page</li>
+</ol>
 
       
     </div>
@@ -443,7 +430,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/C/" rel="tag"># C++</a>
+            <a href="/tags/网卡/" rel="tag"># 网卡</a>
           
         </div>
       
@@ -456,8 +443,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/02/25/FreeFlow-note/" rel="next" title="FreeFlow Software-based Virtual RDMA Networking for Containerized Clouds(NSDI 2019)">
-                <i class="fa fa-chevron-left"></i> FreeFlow Software-based Virtual RDMA Networking for Containerized Clouds(NSDI 2019)
+              <a href="/2019/03/06/promiscuous-mode/" rel="next" title="关于网卡的混杂模式">
+                <i class="fa fa-chevron-left"></i> 关于网卡的混杂模式
               </a>
             
           </div>
@@ -465,10 +452,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2019/03/06/promiscuous-mode/" rel="prev" title="关于网卡的混杂模式">
-                关于网卡的混杂模式 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -610,7 +593,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#变量内存管理-存储持续性"><span class="nav-number">1.</span> <span class="nav-text">变量内存管理-存储持续性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#链接性（linkage）"><span class="nav-number">2.</span> <span class="nav-text">链接性（linkage）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#作用域（scope）"><span class="nav-number">3.</span> <span class="nav-text">作用域（scope）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Auto"><span class="nav-number">4.</span> <span class="nav-text">Auto</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#寄存器变量Register"><span class="nav-number">5.</span> <span class="nav-text">寄存器变量Register</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#初始化"><span class="nav-number">6.</span> <span class="nav-text">初始化</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#外部-全局变量的C-单定义规则-One-Definition-Rule-ODR"><span class="nav-number">7.</span> <span class="nav-text">外部/全局变量的C++单定义规则(One Definition Rule, ODR)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#存储说明符"><span class="nav-number">8.</span> <span class="nav-text">存储说明符</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#CV-限定符"><span class="nav-number">9.</span> <span class="nav-text">CV-限定符</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#解决步骤："><span class="nav-number">1.</span> <span class="nav-text">解决步骤：</span></a></li></ol></div>
             
 
           </div>
