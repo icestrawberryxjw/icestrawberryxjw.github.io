@@ -79,18 +79,18 @@
 
 
 
-<meta name="description" content="C++ primer 一书第九章的内存模型 笔记。—— Jiawei Xu 2019年3月6日  变量内存管理-存储持续性C++使用三种（在C++11中是四种）不同的方案来存储数据，这些方案的区别在于数据保留在内存中的时间。  自动存储持续性（栈）： 在函数定义中声明的变量（包括函数参数）的存储持续性为自动的。它们在程序开始执行其所属的函数或代码块时被创建，在执行完函数或代码块时，它们的内存被释放">
+<meta name="description" content="C++ Primer Plus 第九章的内存模型 笔记整理。—— Jiawei Xu 2019年3月6日  关键字：存储持续性、链接性、作用域、初始化、单定义规则、存储说明符（auto, register, static, extern, mutable, thread_local）、CV限定符（const, volatile）、名称修饰/矫正/C++语言链接性 变量内存管理-存储持续性C++使用">
 <meta name="keywords" content="C++">
 <meta property="og:type" content="article">
 <meta property="og:title" content="C++内存模型">
 <meta property="og:url" content="http://yoursite.com/2019/03/06/CplusPrimerChapter9-mem-manage-note/index.html">
 <meta property="og:site_name" content="icestrawberryxjw">
-<meta property="og:description" content="C++ primer 一书第九章的内存模型 笔记。—— Jiawei Xu 2019年3月6日  变量内存管理-存储持续性C++使用三种（在C++11中是四种）不同的方案来存储数据，这些方案的区别在于数据保留在内存中的时间。  自动存储持续性（栈）： 在函数定义中声明的变量（包括函数参数）的存储持续性为自动的。它们在程序开始执行其所属的函数或代码块时被创建，在执行完函数或代码块时，它们的内存被释放">
+<meta property="og:description" content="C++ Primer Plus 第九章的内存模型 笔记整理。—— Jiawei Xu 2019年3月6日  关键字：存储持续性、链接性、作用域、初始化、单定义规则、存储说明符（auto, register, static, extern, mutable, thread_local）、CV限定符（const, volatile）、名称修饰/矫正/C++语言链接性 变量内存管理-存储持续性C++使用">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-03-06T14:25:20.466Z">
+<meta property="og:updated_time" content="2019-03-11T06:00:18.372Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="C++内存模型">
-<meta name="twitter:description" content="C++ primer 一书第九章的内存模型 笔记。—— Jiawei Xu 2019年3月6日  变量内存管理-存储持续性C++使用三种（在C++11中是四种）不同的方案来存储数据，这些方案的区别在于数据保留在内存中的时间。  自动存储持续性（栈）： 在函数定义中声明的变量（包括函数参数）的存储持续性为自动的。它们在程序开始执行其所属的函数或代码块时被创建，在执行完函数或代码块时，它们的内存被释放">
+<meta name="twitter:description" content="C++ Primer Plus 第九章的内存模型 笔记整理。—— Jiawei Xu 2019年3月6日  关键字：存储持续性、链接性、作用域、初始化、单定义规则、存储说明符（auto, register, static, extern, mutable, thread_local）、CV限定符（const, volatile）、名称修饰/矫正/C++语言链接性 变量内存管理-存储持续性C++使用">
 
 
 
@@ -363,8 +363,9 @@
       
 
       
-        <p><em>C++ primer</em> 一书第九章的内存模型 笔记。—— Jiawei Xu 2019年3月6日</p>
+        <p><em>C++ Primer Plus</em> 第九章的内存模型 笔记整理。—— Jiawei Xu 2019年3月6日</p>
 <hr>
+<p><strong>关键字：</strong>存储持续性、链接性、作用域、初始化、单定义规则、存储说明符（auto, register, static, extern, mutable, thread_local）、CV限定符（const, volatile）、名称修饰/矫正/C++语言链接性</p>
 <h4 id="变量内存管理-存储持续性"><a href="#变量内存管理-存储持续性" class="headerlink" title="变量内存管理-存储持续性"></a>变量内存管理-存储持续性</h4><p>C++使用三种（在C++11中是四种）不同的方案来存储数据，这些方案的区别在于数据保留在内存中的时间。</p>
 <ul>
 <li><p><strong>自动存储持续性</strong>（栈）：</p>
@@ -437,6 +438,20 @@
 </li>
 <li>volatile：即使程序代码没有对内存单元进行修改，其值也可能发生变化。作用是为了改善编译器的优化能力。例如，假设编译器发现，程序在几条语句中两次使用了某个变量的值，则编译器可能不是让程序查找这个值两次，而是将这个值缓存到寄存器中。这种优化假设变量的值在这两次使用之间不会变化。如果不将变量声明为volatile。则编译器将进行这种优化；将变量声明为volatile，相当于告诉编译器不要进行这种优化。</li>
 </ul>
+<h4 id="函数链接性"><a href="#函数链接性" class="headerlink" title="函数链接性"></a>函数链接性</h4><ul>
+<li><p>所有函数的存储持续性都自动为静态的。默认情况下，函数的链接性为外部的，可以在文件间共享。、</p>
+</li>
+<li><p>可以使用static将函数的链接性设置为内部的，使之只能在一个文件中使用。必须同时在原型和函数定义中使用该关键字。于是，可以在其他文件中定义同名的函数，和变量一样，在定义静态函数的文件中，静态函数将覆盖外部定义。</p>
+</li>
+<li>单定义规则也适用于非内联函数，对于每个非内联函数，程序只能包含一个定义。对于链接性为外部的函数来说，多文件程序中，只能有一个文件包含该函数的定义，但使用该函数的每个文件都应包含其函数原型。</li>
+</ul>
+<h4 id="C-查找函数定义的顺序"><a href="#C-查找函数定义的顺序" class="headerlink" title="C++查找函数定义的顺序"></a>C++查找函数定义的顺序</h4><ul>
+<li>静态函数：本文件</li>
+<li>所有程序文件-&gt;没找到的话，在库中搜索</li>
+</ul>
+<h4 id="名称矫正-名称修饰-C-语言链接"><a href="#名称矫正-名称修饰-C-语言链接" class="headerlink" title="名称矫正/名称修饰/C++语言链接"></a>名称矫正/名称修饰/C++语言链接</h4><p>在C++中，同一个名称可能对应多个函数，必须将这些函数翻译为不同的符号名称，这种方法被称为C++语言链接（C++ language linkage）。方式：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">extern &quot;C&quot; void spiff(int)  //使用C语言链接性</div><div class="line">extern void spiff(int) 		//使用C++语言链接性</div><div class="line">extern &quot;C++&quot; void spiff(int) 		//使用C++语言链接性</div></pre></td></tr></table></figure>
+<h4 id="动态内存"><a href="#动态内存" class="headerlink" title="动态内存"></a>动态内存</h4><p>含义：使用C++运算符new(或C函数malloc())分配的内存。</p>
 
       
     </div>
@@ -556,7 +571,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">13</span>
+                  <span class="site-state-item-count">15</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -621,7 +636,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#变量内存管理-存储持续性"><span class="nav-number">1.</span> <span class="nav-text">变量内存管理-存储持续性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#链接性（linkage）"><span class="nav-number">2.</span> <span class="nav-text">链接性（linkage）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#作用域（scope）"><span class="nav-number">3.</span> <span class="nav-text">作用域（scope）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Auto"><span class="nav-number">4.</span> <span class="nav-text">Auto</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#寄存器变量Register"><span class="nav-number">5.</span> <span class="nav-text">寄存器变量Register</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#初始化"><span class="nav-number">6.</span> <span class="nav-text">初始化</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#外部-全局变量的C-单定义规则-One-Definition-Rule-ODR"><span class="nav-number">7.</span> <span class="nav-text">外部/全局变量的C++单定义规则(One Definition Rule, ODR)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#存储说明符"><span class="nav-number">8.</span> <span class="nav-text">存储说明符</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#CV-限定符"><span class="nav-number">9.</span> <span class="nav-text">CV-限定符</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#变量内存管理-存储持续性"><span class="nav-number">1.</span> <span class="nav-text">变量内存管理-存储持续性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#链接性（linkage）"><span class="nav-number">2.</span> <span class="nav-text">链接性（linkage）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#作用域（scope）"><span class="nav-number">3.</span> <span class="nav-text">作用域（scope）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Auto"><span class="nav-number">4.</span> <span class="nav-text">Auto</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#寄存器变量Register"><span class="nav-number">5.</span> <span class="nav-text">寄存器变量Register</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#初始化"><span class="nav-number">6.</span> <span class="nav-text">初始化</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#外部-全局变量的C-单定义规则-One-Definition-Rule-ODR"><span class="nav-number">7.</span> <span class="nav-text">外部/全局变量的C++单定义规则(One Definition Rule, ODR)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#存储说明符"><span class="nav-number">8.</span> <span class="nav-text">存储说明符</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#CV-限定符"><span class="nav-number">9.</span> <span class="nav-text">CV-限定符</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#函数链接性"><span class="nav-number">10.</span> <span class="nav-text">函数链接性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#C-查找函数定义的顺序"><span class="nav-number">11.</span> <span class="nav-text">C++查找函数定义的顺序</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#名称矫正-名称修饰-C-语言链接"><span class="nav-number">12.</span> <span class="nav-text">名称矫正/名称修饰/C++语言链接</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#动态内存"><span class="nav-number">13.</span> <span class="nav-text">动态内存</span></a></li></ol></div>
             
 
           </div>

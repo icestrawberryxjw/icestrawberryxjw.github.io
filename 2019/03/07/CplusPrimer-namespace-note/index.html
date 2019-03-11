@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="C++," />
 
 
 
@@ -79,16 +79,18 @@
 
 
 
-<meta name="description" content="The most difficult thing is the decision to act, the rest is merely tenacity.">
-<meta property="og:type" content="website">
-<meta property="og:title" content="icestrawberryxjw">
-<meta property="og:url" content="http://yoursite.com/categories/读书/index.html">
+<meta name="description" content="C++ Primer Plus 名称空间 笔记整理。—— Jiawei Xu 2019年3月7日 using声明使特定的标识符可用，using编译指令使整个名称空间可用。 名称空间指导原则：  使用在已命名的名称空间中声明的变量，而不是使用外部全局变量。 使用在已命名的名称空间中声明的变量，而不是使用静态全局变量。 如果开发了一个函数库或类库，将其放在一个名称空间中。 不要在头文件中使用using">
+<meta name="keywords" content="C++">
+<meta property="og:type" content="article">
+<meta property="og:title" content="C++ Primer Plus 命名空间笔记">
+<meta property="og:url" content="http://yoursite.com/2019/03/07/CplusPrimer-namespace-note/index.html">
 <meta property="og:site_name" content="icestrawberryxjw">
-<meta property="og:description" content="The most difficult thing is the decision to act, the rest is merely tenacity.">
+<meta property="og:description" content="C++ Primer Plus 名称空间 笔记整理。—— Jiawei Xu 2019年3月7日 using声明使特定的标识符可用，using编译指令使整个名称空间可用。 名称空间指导原则：  使用在已命名的名称空间中声明的变量，而不是使用外部全局变量。 使用在已命名的名称空间中声明的变量，而不是使用静态全局变量。 如果开发了一个函数库或类库，将其放在一个名称空间中。 不要在头文件中使用using">
 <meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-03-11T06:00:33.592Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="icestrawberryxjw">
-<meta name="twitter:description" content="The most difficult thing is the decision to act, the rest is merely tenacity.">
+<meta name="twitter:title" content="C++ Primer Plus 命名空间笔记">
+<meta name="twitter:description" content="C++ Primer Plus 名称空间 笔记整理。—— Jiawei Xu 2019年3月7日 using声明使特定的标识符可用，using编译指令使整个名称空间可用。 名称空间指导原则：  使用在已命名的名称空间中声明的变量，而不是使用外部全局变量。 使用在已命名的名称空间中声明的变量，而不是使用静态全局变量。 如果开发了一个函数库或类库，将其放在一个名称空间中。 不要在头文件中使用using">
 
 
 
@@ -118,13 +120,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/categories/读书/"/>
+  <link rel="canonical" href="http://yoursite.com/2019/03/07/CplusPrimer-namespace-note/"/>
 
 
 
 
 
-  <title>分类: 读书 | icestrawberryxjw</title>
+  <title>C++ Primer Plus 命名空间笔记 | icestrawberryxjw</title>
   
 
 
@@ -143,7 +145,7 @@
     
   
 
-  <div class="container sidebar-position-right ">
+  <div class="container sidebar-position-right page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -247,55 +249,194 @@
           <div id="content" class="content">
             
 
-  
-  
-  
-  <div class="post-block category">
+  <div id="posts" class="posts-expand">
+    
 
-    <div id="posts" class="posts-collapse">
-      <div class="collection-title">
-        <h1>读书<small>分类</small>
-        </h1>
-      </div>
+  
 
-      
-        
+  
+  
+  
 
   <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/07/CplusPrimer-namespace-note/">
 
-      <h2 class="post-title">
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="icestrawberryxjw">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="icestrawberryxjw">
+    </span>
+
+    
+      <header class="post-header">
+
         
-            <a class="post-title-link" href="/2018/11/15/fpgas-for-dummies-note/" itemprop="url">
-              
-                <span itemprop="name">FPGAs For Dummies阅读笔记</span>
-              
-            </a>
         
-      </h2>
+          <h1 class="post-title" itemprop="name headline">C++ Primer Plus 命名空间笔记</h1>
+        
 
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2018-11-15T14:48:35+08:00"
-              content="2018-11-15" >
-          11-15
-        </time>
-      </div>
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-07T15:20:34+08:00">
+                2019-03-07
+              </time>
+            
 
-    </header>
-  </article>
+            
 
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/技术/" itemprop="url" rel="index">
+                    <span itemprop="name">技术</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/技术/C/" itemprop="url" rel="index">
+                    <span itemprop="name">C++</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><em>C++ Primer Plus</em> 名称空间 笔记整理。—— Jiawei Xu 2019年3月7日</p>
+<p><strong>using声明</strong>使特定的标识符可用，<strong>using编译指令</strong>使整个名称空间可用。</p>
+<p><strong>名称空间指导原则：</strong></p>
+<ol>
+<li>使用在已命名的名称空间中声明的变量，而不是使用外部全局变量。</li>
+<li>使用在已命名的名称空间中声明的变量，而不是使用静态全局变量。</li>
+<li>如果开发了一个函数库或类库，将其放在一个名称空间中。</li>
+<li>不要在头文件中使用using编译指令。这样会掩盖要让哪些名称可用；另外，包含头文件的顺序可能影响程序的行为。如果非要使用编译指令using，应将其放在所有预处理编译指令#include之后。</li>
+<li>导入名称时，首选使用作用域解析运算符或using声明的方法。</li>
+<li>对于using声明，首选将其作用域设置为局部而不是全局。</li>
+</ol>
 
       
     </div>
+    
+    
+    
 
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/C/" rel="tag"># C++</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/03/06/ip-conf-file-inconsistency/" rel="next" title="解决Centos网卡IP和配置文件不符的问题">
+                <i class="fa fa-chevron-left"></i> 解决Centos网卡IP和配置文件不符的问题
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/03/08/CplusPrimer-object-and-class-note/" rel="prev" title="C++ Primer Plus 第十章对象和类笔记">
+                C++ Primer Plus 第十章对象和类笔记 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
   </div>
   
   
   
+  </article>
 
-  
 
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
 
 
           </div>
@@ -303,6 +444,10 @@
 
 
           
+
+  
+
+
 
         </div>
         
@@ -527,6 +672,10 @@
   
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
 
   
 

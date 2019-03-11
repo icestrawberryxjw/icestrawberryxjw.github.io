@@ -262,6 +262,479 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/13/Git与GitHub总结笔记-参考《GitHub入门与实践》/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="icestrawberryxjw">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="icestrawberryxjw">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/06/13/Git与GitHub总结笔记-参考《GitHub入门与实践》/" itemprop="url">Git与GitHub总结笔记-参考《GitHub入门与实践》</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-13T19:53:20+08:00">
+                2018-06-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/技术/" itemprop="url" rel="index">
+                    <span itemprop="name">技术</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/技术/Git/" itemprop="url" rel="index">
+                    <span itemprop="name">Git</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>版权声明：本文为 Jiawei Xu 于2018年6月13日所写，未经允许不得转载。</p>
+<p>前言：虽然已经用过一段时间自己的git服务器和github，但是看到这本书还是想深入了解一下。正好最近微软收购了Github，因此写了这篇笔记纪念一下2333，并总结了一下Git的常用命令。《GitHub入门与实践》这本书深入介绍了关于Git的知识，有利于加深对Git的理解，还是比较推荐的。</p>
+<ul>
+<li><p>关于GitHub</p>
+<ol>
+<li><p>GitHub总部：旧金山</p>
+</li>
+<li><p>吉祥物：Octocat</p>
+</li>
+<li><p>不只是Git仓库托管服务</p>
+</li>
+<li><p>协同工作的软件：群件（Groupware）、CRM（Customer Relationship Management，顾客关系管理）</p>
+</li>
+<li><p>Pull Request 是指开发者在本地对源代码进行更改后，向GitHub 中托管的Git 仓库请求合并的功能。不但能轻松查看源代码的前后差别，还可以对指定的一行代码进行评论。</p>
+</li>
+<li><p>GitHub Flavored Markdown（GFM）语法</p>
+</li>
+<li><p>@用户：输入“@ 组织名”可以让属于该组织的所有成员收到通知</p>
+</li>
+<li><p>输入“# 编号”，会连接到该仓库所对应的Issue 编号。</p>
+</li>
+<li><p>社会化编程的概念 </p>
+</li>
+<li><p>Issue 功能，是将一个任务或问题分配给一个Issue 进行追踪和管理</p>
+<p>的功能</p>
+</li>
+<li><p>Wiki：开发文档或手册的编写 </p>
+</li>
+<li><p>Linux 的创始人Linus Torvalds 在2005 年开发了Git 的原型程序。当时，由于在Linux 内核开发中使用的既有版本管理系统的开发方许可证发生了变更，为了更换新的版本管理系统，Torvalds 开发了Git。</p>
+</li>
+</ol>
+</li>
+<li><p>Git安装</p>
+<ol>
+<li><p>关于windows换行符的处理</p>
+<p>GitHub 中公开的代码大部分都是以Mac 或Linux 中的LF（LineFeed）换行。然而，由于Windows 中是以CRLF（Carriage Return ＋Line Feed）换行的，所以在非对应的编辑器中将不能正常显示。</p>
+<p>Git 可以通过设置自动转换这些换行符。使用Windows 环境的各位，请选择推荐的“Checkout Windows-style, commit Unix-style line endings”选项。换行符在签出时会自动转换为CRLF，在提交时则会自动转换为LF。</p>
+</li>
+<li><p>初始设置</p>
+<ul>
+<li><p>首先来设置使用Git 时的姓名和邮箱地址。名字请用英文输入。 </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">$ git config --global user.name &quot;Firstname Lastname&quot;</div><div class="line">$ git config --global user.email &quot;your_email@example.com&quot;</div></pre></td></tr></table></figure>
+<p>这个命令，会在“~/.gitconfig”中以如下形式输出设置文件。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">[user]</div><div class="line">name = Firstname Lastname</div><div class="line">email = your_email@example.com</div></pre></td></tr></table></figure>
+<p>想更改这些信息时，可以直接编辑这个设置文件。这里设置的姓名和邮箱地址会用在Git 的提交日志中</p>
+</li>
+<li><p>提高命令输出的可读性 </p>
+<p>将color.ui 设置为auto 可以让命令的输出拥有更高的可读性。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ git config --global color.ui auto</div></pre></td></tr></table></figure>
+<p>“~/.gitconfig”中会增加下面一行。 </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">[color]</div><div class="line">ui = auto</div></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>GitHub</p>
+<ul>
+<li><p>头像</p>
+<p>在GitHub 上随处可见的头像（账户独有的标识）是通过Gravatar服务显示的。</p>
+</li>
+<li><p>创建SSH Key 命令</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ssh-keygen -t rsa -C &quot;your_email@example.com&quot;</div></pre></td></tr></table></figure>
+<p><em>Your identification has been saved in <code>/Users/your_user_directory/.ssh/id_rsa</code>.</em></p>
+<p><em>Your public key has been saved in <code>/Users/your_user_directory/.ssh/id_rsa.pub</code>.</em></p>
+<p>id_rsa 文件是私有密钥，id_rsa.pub 是公开密钥。 </p>
+</li>
+<li><p>验证：用手中的私人密钥与GitHub 进行认证和通信</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ ssh -T git@github.com</div></pre></td></tr></table></figure>
+</li>
+<li><p>.gitignore 文件 用来描述Git 仓库中不需管理的文件与目录。 </p>
+</li>
+<li><p>在GitHub 上，有修正BSD 许可协议、Apache 许可协议等多种许可协议供人们选择，不过大多数软件都使用MIT 许可协议。实际使用时， 只需将LICENSE 文件加入仓库， 并在README.md 文件中声明使用了何种许可协议即可。</p>
+</li>
+</ul>
+</li>
+<li><p>自己总结了一下基本命令</p>
+<ul>
+<li><p><code>git init</code>初始化仓库：如果初始化成功，执行了git init命令的目录下就会生成.git 目录。这个.git 目录里存储着管理当前目录内容所需的仓库数据。在Git 中，我们将这个目录的内容称为“附属于该仓库的工作树”。</p>
+</li>
+<li><p><code>git status</code>查看仓库的状态。</p>
+</li>
+<li><p><code>git add</code>命令将文件加入暂存区。</p>
+</li>
+<li><p><code>git commit -m &quot;提交信息&quot;</code>将当前暂存区中的文件实际保存到仓库的历史记录中。</p>
+<ul>
+<li><p>记录详细提交信息的话，不加-m，执行后会启动编辑器。</p>
+<p>在编辑器中记述提交信息的格式如下。</p>
+<p>● 第一行：用一行文字简述提交的更改内容</p>
+<p>● 第二行：空行</p>
+<p>● 第三行以后：记述更改的原因和详细内容</p>
+<p>在以#（井号）标为注释的Changes to be committed（要提交的更改）栏中，可以查看本次提交中包含的文件。将提交信息按格式记述完毕后，请保存并关闭编辑器，以#（井号）标为注释的行不必删除。</p>
+</li>
+<li><p>如果在编辑器启动后想中止提交，请将提交信息留空并直接关闭编辑器，随后提交就会被中止。</p>
+</li>
+<li><p>写在一起：<code>git commit -am &quot;&quot;</code></p>
+</li>
+</ul>
+</li>
+<li><p><code>git log</code>命令查看提交日志 。</p>
+</li>
+<li><p><code>git log --pretty=short</code>只显示提交信息的第一行 。只要在git log命令后加上目录名，便会只显示该目录下的日志。如果加的是文件名，就会只显示与该文件相关的日志。</p>
+</li>
+<li><p><code>git log -p</code>查看提交所带来的改动</p>
+</li>
+<li><p><code>git push</code>更新仓库</p>
+</li>
+<li><p><code>git diff</code>查看当前工作树与暂存区的差别</p>
+</li>
+<li><p><code>git diff HEAD</code>查看工作树和最新提交的差别。在执行git commit命令之前先执行 git diff HEAD命令，查看本次提交与上次提交之间有什么差别，等确认完毕后再进行提交。这里的HEAD 是指向当前分支中最新一次提交的指针。</p>
+</li>
+<li><p><code>git branch</code>命令可以将分支名列表显示，同时可以确认当前所在分支。“*”表示这是我们当前所在的分支。</p>
+</li>
+<li><p><code>git checkout -b &quot;branch name&quot;</code>以当前的master 分支为基础创建并切换到新的分支</p>
+</li>
+<li><p><code>git checkout -</code>用“-”（连字符）代替分支名，就可以切换至上一个分支。</p>
+</li>
+<li><p><code>git merge --no-ff feature-A</code>合并分支。为了在历史记录中明确记录下本次分支合并，需要创建合并提交。因此，在合并时加上–no-ff参数。随后编辑器会启动，用于录入合并提交的信息。 将编辑器中显示的内容保存，关闭编辑器。</p>
+</li>
+<li><p><code>git log --graph</code>以图表形式查看分支 </p>
+</li>
+<li><p><code>git reset</code>回溯历史版本，要让仓库的HEAD、暂存区、当前工作树回溯到指定状态，需要用</p>
+<p>到git reset –hard命令。只要提供目标时间点的哈希值A就可以完全恢复至该时间点的状态。 </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">$ git reset --hard fd0cbf0d4a25f747230694d95cac1be72d33441d</div><div class="line">HEAD is now at fd0cbf0 Add index</div></pre></td></tr></table></figure>
+<p>git log命令只能查看以当前状态为终点的历史日志。使用<code>git reflog</code>命令，查看当前仓库的操作日志。</p>
+</li>
+<li><p><code>git commit --amend</code>修改上一条提交信息，执行命令后，编辑器就会启动。</p>
+</li>
+<li><p><code>git rebase -i</code>压缩历史，<code>git rebase -i HEAD~2</code>选定当前分支中包含HEAD（最新提交）在内的两个最新历史记录为对象，并在编辑器中打开。</p>
+</li>
+<li><p>错字漏字等失误称作typo，将提交信息记为”Fix typo”。 </p>
+</li>
+<li><p><code>git remote add</code>设置成本地仓库的远程仓库</p>
+<p><code>$ git remote add origin git@github.com:github-book/git-tutorial.git</code> 按照上述格式执行<code>git remote add</code>命令之后，Git 会自动将<code>git@github.com:github-book/git-tutorial.git</code>远程仓库的名称设置为origin（标识符）。</p>
+<p>或者<code>git remote add origin https://github.com/&lt;your_username&gt;/gitname.git</code></p>
+</li>
+<li><p><code>git push -u origin master</code>将当前分支下本地仓库中的内容推送给远程仓库，。-u参数可以在推送的同时，将origin 仓库的master分支设置为本地仓库当前分支的upstream（上游）。添加了这个参数，将来运行git pull命令从远程仓库获取内容时，本地仓库的这个分支就可以直接从origin 的master 分支获取内容，省去了另外添加参数的麻烦。</p>
+</li>
+<li><p>推送至master 以外的分支：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">git checkout -b feature-D</div><div class="line">git push -u origin feature-D</div></pre></td></tr></table></figure>
+<p> 在本地仓库中创建feature-D 分支，并将它以同名形式push 至远程仓库。 将它push 给远程仓</p>
+<p>库并保持分支名称不变。</p>
+</li>
+<li><p><code>git branch -a</code>命令查看当前分支的相关信息。添加-a参数可以同时显示本地仓库和远程仓库的分支信息。</p>
+</li>
+<li><p><code>git checkout -b feature-D origin/feature-D</code>将feature-D 分支获取至本地仓库。 </p>
+</li>
+<li><p><code>git pull origin feature-D</code>使用git pull 命令，将本地的feature-D 分支更新到最新状态。</p>
+</li>
+<li><p>强行pull命令：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">git fetch --all	// 只是下载代码到本地，不进行合并操作</div><div class="line">git reset --hard origin/master 	// 把HEAD指向最新下载的版本</div></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+</ol>
+</li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/06/hexo使用总结/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="icestrawberryxjw">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="icestrawberryxjw">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/06/06/hexo使用总结/" itemprop="url">hexo使用总结</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-06T11:19:29+08:00">
+                2018-06-06
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/使用总结/" itemprop="url" rel="index">
+                    <span itemprop="name">使用总结</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+             <!--test文章摘要：转载请注明文章出处-->
+<ul>
+<li><p>新建页面</p>
+<p><code>hexo new &quot;文章name&quot;</code>或者<code>hexo n &quot;文章name&quot;</code></p>
+</li>
+<li><p>草稿</p>
+<p><code>hexo publish</code>=<code>hexo p</code></p>
+</li>
+<li><p>生成</p>
+<p><code>hexo generate</code>=<code>hero g</code></p>
+</li>
+<li><p>启动服务器预览</p>
+<p><code>hexo server</code>=<code>hexo s</code></p>
+</li>
+<li><p>部署</p>
+<p><code>hexo deploy</code>=<code>hexo d</code>或者与g合并写成<code>hexo d -g</code>，有时候需要先用<code>hexo clean</code>清除cache file</p>
+</li>
+<li><p>显示草稿</p>
+<p><code>hexo --draft</code></p>
+</li>
+<li><p>设置多标签：</p>
+<p>tags后面这样写</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">tags: [标签1,标签2,标签3]</div></pre></td></tr></table></figure>
+</li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/03/22/Voyager-Complete-Container-State-Migration-ICDCS-2017/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1106,7 +1579,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">13</span>
+                  <span class="site-state-item-count">15</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
