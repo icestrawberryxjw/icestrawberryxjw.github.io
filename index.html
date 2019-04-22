@@ -262,6 +262,213 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/04/19/RDMA-concepts/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="icestrawberryxjw">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="icestrawberryxjw">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/04/19/RDMA-concepts/" itemprop="url">RDMA-1-基础术语</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-04-19T21:15:16+08:00">
+                2019-04-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/技术/" itemprop="url" rel="index">
+                    <span itemprop="name">技术</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/技术/RDMA/" itemprop="url" rel="index">
+                    <span itemprop="name">RDMA</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>版权声明：本文为 Jiawei Xu 于2019年4月19日所写，未经允许不得转载。</p>
+<ol>
+<li>Access Layer：用于访问互连结构（VPI，InfiniBand，以太网，FCoE）的低层操作系统基础设施。 它包括支持上层网络协议、中间件和管理代理所需的所有基本传输服务。</li>
+<li>AH (Address Handle，地址句柄)：一个对象，UD QP中用于描述到远程端的路径。</li>
+<li>CA (Channel Adapter，通道适配器)：终止一个Infiniband链路的设备，执行传输层的功能。</li>
+<li>CI (Channel Interface，通道接口)：通过组合网络适配器，相关固件和设备驱动程序软件实现向动词消费者呈现通道。</li>
+<li>CM (Communication Manager)：负责建立、维护释放RC、UC QP服务类型的通信。Service ID Resolution Protocol允许UD服务的用户放置QP来支持他们想要的服务。</li>
+<li>Compare &amp; Swap：指示远程QP读取一个64位的值，将它和提供的比较值比较，如果相等，使用QP中的交换值替代。</li>
+<li>CQ(Completion Queue)：一个先进先出的完成队列，包括CQE。</li>
+<li>CQE(Completion Queue Entry)：CQ中的一个条目，描述了完成的WR的信息，例如状态、大小等。</li>
+<li>DMA(Direct Memory Access)：允许硬件直接获取、放置内存中的数据，绕过CPU。</li>
+<li>Fetch &amp; Add：指示远程的QP读取一个64位的值并加上QP中的数据值之后替代。</li>
+<li>GUID(Globally Unique IDentifier)：64位的数唯一标识一台设备或者一个子网的一个组件。</li>
+<li>GID(Global IDentifier)：一个128位的书用来表示一个网络适配器的端口、一个路由器的端口或者一个多播组。</li>
+<li>GRH(Global Routing Header)：一个包头用来发送数据包跨过一个子网边界，也用来发送多播消息。</li>
+<li>Join operation：一个IB端口要收到多播数据包必须通过发送一个请求给SA显式加入一个多播组。</li>
+<li>lkey：一旦MR注册完会收到一个lkey被本地WR用来识别内存域和它相关的权限。</li>
+<li>LID(Local IDentifier)：子网管理器分配一个一个16位的地址给端节点，每个LID在它的子网内都是唯一的。</li>
+<li>LLE(Low Latency Ethernet)：允许以太网上的IB传输的CEE上的RDMA服务。</li>
+<li>NA(Network Adapter)：终止链路的设备，执行传输层功能。</li>
+<li>MGID(Multicast Group ID)：IB多播组，用MGID标识，由SM管理。SM把一个MLID和每个MGID联系起来，显式的设置互连的IB交换机，确保加入到多播组的所有端口都收到了数据包。</li>
+<li>MR(Memory Region)：已经注册了访问的权限的一段连续内存buffer，这些buffer需要注册来让网络适配器使用它们。在注册过程中，L_Key和R_Key会被创建并和已经创建的内存域关联。</li>
+<li>MTU(Maximum Transfer Unit)：一个端口可以发送或接受的一个数据包payload的最大大小(不包括headers)。</li>
+<li>MW(Memory Window)：分配的资源——在绑定到现有内存注册中的指定区域后启用远程访问。每个内存窗口都一个关联的窗口句柄，一系列访问权限和当前的R_Key。</li>
+<li>Outstanding Work Request：那些已经提交到工作队列但是没有poll通知完成的。</li>
+<li>pkey(Partition key)：pkey标识了端口属于的partition。一个pkey约类似于以太网的VLAN ID。用来指向一个在端口的partition key表里的一个条目。每个端口都被子网管理器（SM）指派了至少一个pkey。</li>
+<li>PD(Protection Domain)：独立WQ的pair(发送队列和接收队列)包在一起放在一个对象里，目的是传输数据一个网络中节点之间的数据。Posts用来初始化发送和接收数据。有三种QP类型：<strong>UD Unreliable Datagram</strong>，<strong>UC Ureliable Connection</strong>，<strong>RC Reliable Connection</strong>。</li>
+<li>RC(Reliable Connection)：一个QP传输服务类型，基于一个面向连接的协议。一个QP(Queue pair)和另外一个单个QP。这些消息将以可靠的方式发送(包括正确性和信息顺序)。</li>
+<li>RDMA_CM(Remote Direct Memeory Access Communication Manager)：API，用来建立可靠、面向连接的和不可靠的数据报的数据传输。它提供了一个RDMA传输中性接口，用于建立连接。API基于sockets，但是适用于基于QP的语义：通信必须通过一个特定的RDMA设备，数据传输基于消息。</li>
+<li>Requestor：连接中初始化一次数据传输的一方(通过提交一个发送请求)。</li>
+<li>Responder：连接中响应从请求方来的命令（可能包括一个写到响应方的内存或从响应方内存读取的请求，以及最后请求响应者接受消息的的命令）的那一方。</li>
+<li>rkey：MR一注册就会收到的数字，用来对即将到来的RDMA操作加以限制。</li>
+<li>RNR(Receiver Not Ready)：一个RC QP中的流，双方连接已经有了但是接受方还没有RR。</li>
+<li>RQ(Receive Queue)：工作队列维护着用户提交的RR。</li>
+<li>RR(Receive Request)：提交给一个RQ的WR，描述了使用一个发送操作码的即将到来的数据将会写到哪里。同时一个带有immediate的RDMA Write将会消耗一个RR。</li>
+<li>RTR(Ready To Receive)：一种QP的状态，一个RR可以被post或者被处理。</li>
+<li>RTS(Ready To Send)：一种QP的状态，一个SR可以被post或者被处理。</li>
+<li>SA(Subnet Administrator)：用来查询或者处理子网管理数据的接口。</li>
+<li>SGE(Scatter/Gather Elements)：S/G元素数组，S/G元素存在于一个WR 更具使用的操作码或者从多个缓存中收集数据，把它们作为一个单独的流发送，或者把一个单独流分解成到几个缓存中。</li>
+<li>SM(Subnet Manager)：配置和管理子网的实体；发现网络拓扑；制定LID；决定路由方案设置路由表；一个master SM和几个可能的slaves(Standby mode)；管理交换机路由表，从而建立通过结构的路径。</li>
+<li>SQ(Send Queue)：一个工作队列，维护了用户提交的SR。</li>
+<li>SR(Send Request)：发送给一个SQ的WR，描述了多少数据将会被传输、它的方向和方式(操作码)。</li>
+<li>SRQ(Shared Receive Queue)：一个含有WQE的队列，里面有即将到来的来自于任何与它相关联的RC/UC/UD的QP。SRQ可以关联超过一个QP。</li>
+<li>TCA(Target Channel Adapter)：一个通道适配器不需要支持verbs，通常在I/O设备中使用。</li>
+<li>UC(Unreliable Connection)：一种QP传输服务类型，基于面向连接的协议，QP会关联另一个单独的QP。这种QP不执行可靠协议，消息可能会丢失。</li>
+<li>UD(Unreliable Datagram)：一种QP传输服务类型，其中消息可以是一个数据包长度，每个UD QP可以从子网中的另一个UD QP发送/接收消息。消息可能会丢失，订单无法保证。UD QP是唯一支持多播消息的类型。 UD数据包的消息大小限制为路径MTU。</li>
+<li>Verbs：一个网络适配器功能的抽象描述。任何应用程序可以使用这些verbs，创建/管理需要对象来使用RDMA进行数据传输。</li>
+<li>VPI（Virtual Protocol Interface）：允许用户改变二层协议的端口。</li>
+<li>WQ(Work Queue)：发送队列或者消息队列的一种。</li>
+<li>WQE：发音为”wookie”，一个工作队列里的一个元素。</li>
+<li>WR(Work Request)：用户提交到工作队列的一个请求。</li>
+</ol>
+<h3 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h3><ol>
+<li><a href="http://www.mellanox.com/related-docs/prod_software/RDMA_Aware_Programming_user_manual.pdf" target="_blank" rel="external">RDMA aware programming user manual.pdf</a></li>
+</ol>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/08/CplusPrimer-object-and-class-note/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -367,7 +574,7 @@
         
           
             <p><em>C++ Primer Plus</em> 第十章对象和类笔记整理。—— Jiawei Xu 2019年3月7日</p>
-<p><strong>关键字：</strong>类、结构、定点表示法、构造函数、析构函数、const成员函数</p>
+<p><strong>关键字：</strong>类、结构、定点表示法、构造函数、析构函数、const成员函数、this指针、类作用域</p>
 <ol>
 <li><p>数据项通常放在私有部分，组成类接口的成员函数放在公有部分。——数据隐藏</p>
 </li>
@@ -444,6 +651,29 @@
 </li>
 <li><p><strong>const成员函数</strong></p>
 <p>应尽可能将const引用和指针用作函数形参一样，只要类方法不修改调用函数，就应将其声明为const。</p>
+<p><code>const Stock &amp; Stock::topval(const Stock &amp; s) const</code> 三个const的意义：1：返回类型为const的引用 2：将函数参数声明为const引用或指向const的指针保证调用对象不被修改。该函数不会修改被显示地访问的对象；3：该函数不会修改被隐式地访问的对象。</p>
+</li>
+<li><p><strong>this指针</strong></p>
+<p>每个成员函数（包括构造函数和析构函数）都有一个this指针，this指针指向调用对象。如果方法需要引用整个调用对象，则可以使用表达式 *this 。在函数的括号后面使用const限定符将this限定为const，这样将不能使用this来修改对象的值。</p>
+<p>*this是对象本身，this是对象的地址。</p>
+</li>
+<li><p>对象数组</p>
+<p>初始化对象数组的方案是，首先使用默认构造函数创建数字元素，然后花括号中的构造函数将创建临时对象，然后将临时对象的内容复制到相应的元素中，因此，要创建类对象数组，则这个类必须有默认构造函数。例子：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> <span class="keyword">int</span> STKS = <span class="number">4</span>;</div><div class="line">Stock stocks[STKS] = &#123;</div><div class="line">    Stock(<span class="string">"NanoSmart"</span>, <span class="number">12.5</span>, <span class="number">20</span>),</div><div class="line">    Stock();</div><div class="line">    Stock(<span class="string">"Monolithic Obelisks"</span>, <span class="number">130</span>, <span class="number">3.25</span>),</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+</li>
+<li><p><strong>类作用域</strong></p>
+<p>使符号常量的作用域为类很有用。常量对于所有对象来说都是相同的，因此可创建一个由所有对象共享的常量。有两种方式：</p>
+<ul>
+<li><p>1）在类中声明一个枚举。在类声明中声明的枚举的作用域为整个类，因此可以用枚举为整个型常量提供作用域为整个类的符号名称。例如：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Bakery</span></span></div><div class="line"><span class="class">&#123;</span></div><div class="line">    <span class="keyword">private</span>:</div><div class="line">    	<span class="keyword">enum</span> &#123;Months = <span class="number">12</span>&#125;;</div><div class="line">    	<span class="keyword">double</span> costs[Months];</div><div class="line">    	...</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>使用枚举只是为了创建符号常量，并不打算创建枚举类型的变量，因此不需要提供枚举名。</p>
+<p>用这种方式枚举不会创建类数据成员，也就是说，所有对象中都不包含枚举。</p>
+</li>
+<li><p>2）另一种在类中定义常量的方式——使用关键字static：例如</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Bakery</span></span></div><div class="line"><span class="class">&#123;</span></div><div class="line">    <span class="keyword">private</span>:</div><div class="line">    	<span class="keyword">static</span> <span class="keyword">const</span> <span class="keyword">int</span> Months = <span class="number">12</span>;</div><div class="line">    	<span class="keyword">double</span> costs[Months];</div><div class="line">    	...</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这将创建一个名为Months的常量，该常量将与其他静态变量存储在一起，而不是存储在对象中。因为，只有一个Months常量，被所有Bakery对象共享。C++98中，只能用这种技术声明值为整数或枚举的静态常量，而不能存储double常量。C++11没有这种限制。</p>
+</li>
+</ul>
 </li>
 </ol>
 
@@ -2266,200 +2496,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/13/Go语言字符串处理总结/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="icestrawberryxjw">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="icestrawberryxjw">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/06/13/Go语言字符串处理总结/" itemprop="url">Go语言字符串处理总结</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-13T20:17:51+08:00">
-                2018-06-13
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/技术/" itemprop="url" rel="index">
-                    <span itemprop="name">技术</span>
-                  </a>
-                </span>
-
-                
-                
-                  ， 
-                
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/技术/Go语言/" itemprop="url" rel="index">
-                    <span itemprop="name">Go语言</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>版权声明：本文为 Jiawei Xu 于2018年6月13日所写，未经允许不得转载。</p>
-<p>正好最近用到了一些字符串，就总结了一下Golang中的字符串处理函数，主要是Golang中的strings包：</p>
-<ol>
-<li><code>Count(s string, str string) int</code>：计算字符串str在s中的非重叠个数。如果str为空串则返回s中的字符（非字节）个数+1。</li>
-<li><code>Index(s string, str string) int</code> ：返回子串str在字符串s中第一次出现的位置。如果找不到则返回-1；如果str为空，则返回0。</li>
-<li><code>LastIndex(s string, str string) int</code>： 返回子串str在字符串s中最后一次出现的位置。如果找不到则返回-1；如果str为空则返回字符串s的长度。</li>
-<li><code>IndexRune(s string, r rune) int</code> ：返回字符r在字符串s中第一次出现的位置。如果找不到则返回-1。</li>
-<li><code>IndexAny(s string, str string) int</code> ：返回字符串str中的任何一个字符在字符串s中第一次出现的位置。如果找不到或str为空则返回-1。</li>
-<li><code>LastIndexAny(s string, str string) int</code>： 返回字符串str中的任何一个字符在字符串s中最后一次出现的位置。如果找不到或str为空则返回-1。</li>
-<li><code>Contains(s string, str string) bool</code>：判断字符串s中是否包含个子串str。包含或者str为空则返回true。</li>
-<li><code>ContainsAny(s string, str string) bool</code>：判断字符串s中是否包含个子串str中的任何一个字符。包含则返回true，如果str为空则返回false。</li>
-<li><code>ContainsRune(s string, r rune) bool</code>：判断字符串s中是否包含字符r。</li>
-<li><code>SplitN(s, str string, n int) []string</code>：以str为分隔符，将s切分成多个子串，结果中<strong>不包含</strong>str本身。如果str为空则将s切分成Unicode字符列表。如果s中没有str子串，则将整个s作为[]string的第一个元素返回。参数n表示最多切分出几个子串，超出的部分将不再切分，最后一个n包含了所有剩下的不切分。如果n为0，则返回nil；如果n小于0，则不限制切分个数，全部切分。</li>
-<li><code>SplitAfterN(s, str string, n int) []string</code>：以str为分隔符，将s切分成多个子串，结果中<strong>包含</strong>str本身。如果str为空，则将s切分成Unicode字符列表。如果s 中没有str子串，则将整个s作为 []string 的第一个元素返回。参数n表示最多切分出几个子串，超出的部分将不再切分。如果n为0，则返回 nil；如果 n 小于 0，则不限制切分个数，全部切分。</li>
-<li><code>Split(s, str string) []string</code>：以str为分隔符，将s切分成多个子切片，结果中<strong>不包含</strong>str本身。如果str为空，则将s切分成Unicode字符列表。如果s中没有str子串，则将整个s作为[]string的第一个元素返回。</li>
-<li><code>SplitAfter(s, str string) []string</code>：以str为分隔符，将s切分成多个子切片，结果中<strong>包含</strong>str本身。如果 str 为空，则将 s 切分成Unicode字符列表。如果s中没有str子串，则将整个s作为[]string的第一个元素返回。</li>
-<li><code>Fields(s string) []string</code>：以连续的空白字符为分隔符，将s切分成多个子串，结果中不包含空白字符本身。空白字符有：\t, \n, \v, \f, \r, ‘ ‘, U+0085 (NEL), U+00A0 (NBSP) 。如果 s 中只包含空白字符，则返回一个空列表。</li>
-<li><code>FieldsFunc(s string, f func(rune) bool) []string</code>：以一个或多个满足f(rune)的字符为分隔符，将s切分成多个子串，结果中不包含分隔符本身。如果s中没有满足f(rune)的字符，则返回一个空列表。</li>
-<li><code>Join(s []string, str string) string</code>：将s中的子串连接成一个单独的字符串，子串之间用str分隔。</li>
-<li><code>HasPrefix(s string, prefix string) bool</code>：判断字符串s是否以prefix开头。</li>
-<li><code>HasSuffix(s, suffix string) bool</code> ：判断字符串s是否以prefix结尾。</li>
-<li><code>Map(f func(rune) rune, s string) string</code>：将s中满足f(rune)的字符替换为f(rune)的返回值。如果f(rune)返回负数，则相应的字符将被删除。</li>
-<li><code>Repeat(s string, n int) string</code>：将n个字符串s连接成一个新的字符串。</li>
-<li><code>ToUpper(s string) string</code>：将s中的所有字符修改为其大写格式。对于非ASCII字符，它的大写格式需要查表转换。</li>
-<li><code>ToLower(s string) string</code>：将s中的所有字符修改为其小写格式。对于非ASCII字符，它的小写格式需要查表转换。</li>
-<li><code>ToTitle(s string) string</code>：将s中的所有字符修改为其Title格式，大部分字符的Title格式就是Upper格式，只有少数字符的Title格式是特殊字符。这里的ToTitle主要给Title函数调用。</li>
-<li><code>TrimLeftFunc(s string, f func(rune) bool) string</code>：删除s头部<strong>连续的</strong>满足f(rune)的字符。</li>
-<li><code>TrimRightFunc(s string, f func(rune) bool) string</code>：删除s尾部<strong>连续的</strong>满足f(rune)的字符。</li>
-<li><code>TrimFunc(s string, f func(rune) bool) string</code>：删除s首尾<strong>连续的</strong>满足f(rune)的字符。</li>
-<li><code>IndexFunc(s string, f func(rune) bool) int</code>：返回s中第一个满足f(rune) 的字符的字节位置。如果没有满足 f(rune) 的字符，则返回 -1。</li>
-<li><code>LastIndexFunc(s string, f func(rune) bool) int</code>：返回s中最后一个满足f(rune)的字符的字节位置。如果没有满足 f(rune) 的字符，则返回 -1。</li>
-<li><code>Trim(s string, str string) string</code>：删除s首尾连续的包含在str中的字符。</li>
-<li><code>TrimLeft(s string, str string) string</code>：删除s头部连续的包含在str中的字符串。</li>
-<li><code>TrimRight(s string, str string) string</code>：删除s尾部连续的包含在str中的字符串。</li>
-<li><code>TrimSpace(s string) string</code>：删除s首尾连续的的空白字符。</li>
-<li><code>TrimPrefix(s, prefix string) string</code>：删除s头部的prefix字符串。如果s不是以prefix开头，则返回原始s。</li>
-<li><code>TrimSuffix(s, suffix string) string</code>：删除s尾部的suffix字符串。如果s不是以suffix结尾，则返回原始s。（只去掉一次，注意和TrimRight区别）</li>
-<li><code>Replace(s, old, new string, n int) string</code>：返回s的副本，并将副本中的old字符串替换为new字符串，替换次数为n次，如果n为-1，则全部替换；如果 old 为空，则在副本的每个字符之间都插入一个new。</li>
-<li><code>EqualFold(s1, s2 string) bool</code>：比较UTF-8编码在小写的条件下是否相等，不区分大小写，同时它还会对特殊字符进行转换。比如将“ϕ”转换为“Φ”、将“Ǆ”转换为“ǅ”等，然后再进行比较。</li>
-<li>“==”比较字符串是否相等，区分大小写，返回bool。</li>
-<li><code>Compare(s1 string, s2 string) int1</code>：比较字符串，区分大小写，比”==”速度快。相等为0，不相等为-1。</li>
-</ol>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2510,7 +2546,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">15</span>
+                  <span class="site-state-item-count">16</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -2521,7 +2557,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-count">10</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -2532,7 +2568,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-count">8</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

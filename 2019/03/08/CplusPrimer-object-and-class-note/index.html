@@ -79,18 +79,18 @@
 
 
 
-<meta name="description" content="C++ Primer Plus 第十章对象和类笔记整理。—— Jiawei Xu 2019年3月7日 关键字：类、结构、定点表示法、构造函数、析构函数、const成员函数  数据项通常放在私有部分，组成类接口的成员函数放在公有部分。——数据隐藏  不必在类声明中使用关键字private，因为这是类对象的默认访问控制。  类class和结构struct之间的唯一区别：结构的默认访问类型是public">
+<meta name="description" content="C++ Primer Plus 第十章对象和类笔记整理。—— Jiawei Xu 2019年3月7日 关键字：类、结构、定点表示法、构造函数、析构函数、const成员函数、this指针、类作用域  数据项通常放在私有部分，组成类接口的成员函数放在公有部分。——数据隐藏  不必在类声明中使用关键字private，因为这是类对象的默认访问控制。  类class和结构struct之间的唯一区别：结构的默">
 <meta name="keywords" content="C++">
 <meta property="og:type" content="article">
 <meta property="og:title" content="C++ Primer Plus 第十章对象和类笔记">
 <meta property="og:url" content="http://yoursite.com/2019/03/08/CplusPrimer-object-and-class-note/index.html">
 <meta property="og:site_name" content="icestrawberryxjw">
-<meta property="og:description" content="C++ Primer Plus 第十章对象和类笔记整理。—— Jiawei Xu 2019年3月7日 关键字：类、结构、定点表示法、构造函数、析构函数、const成员函数  数据项通常放在私有部分，组成类接口的成员函数放在公有部分。——数据隐藏  不必在类声明中使用关键字private，因为这是类对象的默认访问控制。  类class和结构struct之间的唯一区别：结构的默认访问类型是public">
+<meta property="og:description" content="C++ Primer Plus 第十章对象和类笔记整理。—— Jiawei Xu 2019年3月7日 关键字：类、结构、定点表示法、构造函数、析构函数、const成员函数、this指针、类作用域  数据项通常放在私有部分，组成类接口的成员函数放在公有部分。——数据隐藏  不必在类声明中使用关键字private，因为这是类对象的默认访问控制。  类class和结构struct之间的唯一区别：结构的默">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-03-11T06:00:57.531Z">
+<meta property="og:updated_time" content="2019-03-12T08:55:57.997Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="C++ Primer Plus 第十章对象和类笔记">
-<meta name="twitter:description" content="C++ Primer Plus 第十章对象和类笔记整理。—— Jiawei Xu 2019年3月7日 关键字：类、结构、定点表示法、构造函数、析构函数、const成员函数  数据项通常放在私有部分，组成类接口的成员函数放在公有部分。——数据隐藏  不必在类声明中使用关键字private，因为这是类对象的默认访问控制。  类class和结构struct之间的唯一区别：结构的默认访问类型是public">
+<meta name="twitter:description" content="C++ Primer Plus 第十章对象和类笔记整理。—— Jiawei Xu 2019年3月7日 关键字：类、结构、定点表示法、构造函数、析构函数、const成员函数、this指针、类作用域  数据项通常放在私有部分，组成类接口的成员函数放在公有部分。——数据隐藏  不必在类声明中使用关键字private，因为这是类对象的默认访问控制。  类class和结构struct之间的唯一区别：结构的默">
 
 
 
@@ -364,7 +364,7 @@
 
       
         <p><em>C++ Primer Plus</em> 第十章对象和类笔记整理。—— Jiawei Xu 2019年3月7日</p>
-<p><strong>关键字：</strong>类、结构、定点表示法、构造函数、析构函数、const成员函数</p>
+<p><strong>关键字：</strong>类、结构、定点表示法、构造函数、析构函数、const成员函数、this指针、类作用域</p>
 <ol>
 <li><p>数据项通常放在私有部分，组成类接口的成员函数放在公有部分。——数据隐藏</p>
 </li>
@@ -441,6 +441,29 @@
 </li>
 <li><p><strong>const成员函数</strong></p>
 <p>应尽可能将const引用和指针用作函数形参一样，只要类方法不修改调用函数，就应将其声明为const。</p>
+<p><code>const Stock &amp; Stock::topval(const Stock &amp; s) const</code> 三个const的意义：1：返回类型为const的引用 2：将函数参数声明为const引用或指向const的指针保证调用对象不被修改。该函数不会修改被显示地访问的对象；3：该函数不会修改被隐式地访问的对象。</p>
+</li>
+<li><p><strong>this指针</strong></p>
+<p>每个成员函数（包括构造函数和析构函数）都有一个this指针，this指针指向调用对象。如果方法需要引用整个调用对象，则可以使用表达式 *this 。在函数的括号后面使用const限定符将this限定为const，这样将不能使用this来修改对象的值。</p>
+<p>*this是对象本身，this是对象的地址。</p>
+</li>
+<li><p>对象数组</p>
+<p>初始化对象数组的方案是，首先使用默认构造函数创建数字元素，然后花括号中的构造函数将创建临时对象，然后将临时对象的内容复制到相应的元素中，因此，要创建类对象数组，则这个类必须有默认构造函数。例子：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> <span class="keyword">int</span> STKS = <span class="number">4</span>;</div><div class="line">Stock stocks[STKS] = &#123;</div><div class="line">    Stock(<span class="string">"NanoSmart"</span>, <span class="number">12.5</span>, <span class="number">20</span>),</div><div class="line">    Stock();</div><div class="line">    Stock(<span class="string">"Monolithic Obelisks"</span>, <span class="number">130</span>, <span class="number">3.25</span>),</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+</li>
+<li><p><strong>类作用域</strong></p>
+<p>使符号常量的作用域为类很有用。常量对于所有对象来说都是相同的，因此可创建一个由所有对象共享的常量。有两种方式：</p>
+<ul>
+<li><p>1）在类中声明一个枚举。在类声明中声明的枚举的作用域为整个类，因此可以用枚举为整个型常量提供作用域为整个类的符号名称。例如：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Bakery</span></span></div><div class="line"><span class="class">&#123;</span></div><div class="line">    <span class="keyword">private</span>:</div><div class="line">    	<span class="keyword">enum</span> &#123;Months = <span class="number">12</span>&#125;;</div><div class="line">    	<span class="keyword">double</span> costs[Months];</div><div class="line">    	...</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>使用枚举只是为了创建符号常量，并不打算创建枚举类型的变量，因此不需要提供枚举名。</p>
+<p>用这种方式枚举不会创建类数据成员，也就是说，所有对象中都不包含枚举。</p>
+</li>
+<li><p>2）另一种在类中定义常量的方式——使用关键字static：例如</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Bakery</span></span></div><div class="line"><span class="class">&#123;</span></div><div class="line">    <span class="keyword">private</span>:</div><div class="line">    	<span class="keyword">static</span> <span class="keyword">const</span> <span class="keyword">int</span> Months = <span class="number">12</span>;</div><div class="line">    	<span class="keyword">double</span> costs[Months];</div><div class="line">    	...</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这将创建一个名为Months的常量，该常量将与其他静态变量存储在一起，而不是存储在对象中。因为，只有一个Months常量，被所有Bakery对象共享。C++98中，只能用这种技术声明值为整数或枚举的静态常量，而不能存储double常量。C++11没有这种限制。</p>
+</li>
+</ul>
 </li>
 </ol>
 
@@ -482,6 +505,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/04/19/RDMA-concepts/" rel="prev" title="RDMA-1-基础术语">
+                RDMA-1-基础术语 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -549,7 +576,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">15</span>
+                  <span class="site-state-item-count">16</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -560,7 +587,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-count">10</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -571,7 +598,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-count">8</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
