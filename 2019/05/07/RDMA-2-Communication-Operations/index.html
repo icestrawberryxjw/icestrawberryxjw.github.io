@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="RDMA," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="版权声明：本文为 Jiawei Xu 于2019年5月7日所写，未经允许不得转载。 RDMA Communication Operations Send(发送)/Send With Immdiate(带立即数据发送) Send操作允许发送数据到一个远程QP的receive queue中。Receiver必须已经提前post一个receiver buffer来接受数据。Sender无法控制数据会放到">
+<meta name="keywords" content="RDMA">
+<meta property="og:type" content="article">
+<meta property="og:title" content="RDMA-2-通信操作相关概念">
+<meta property="og:url" content="http://yoursite.com/2019/05/07/RDMA-2-Communication-Operations/index.html">
+<meta property="og:site_name" content="icestrawberryxjw">
+<meta property="og:description" content="版权声明：本文为 Jiawei Xu 于2019年5月7日所写，未经允许不得转载。 RDMA Communication Operations Send(发送)/Send With Immdiate(带立即数据发送) Send操作允许发送数据到一个远程QP的receive queue中。Receiver必须已经提前post一个receiver buffer来接受数据。Sender无法控制数据会放到">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-05-08T06:52:24.379Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="RDMA-2-通信操作相关概念">
+<meta name="twitter:description" content="版权声明：本文为 Jiawei Xu 于2019年5月7日所写，未经允许不得转载。 RDMA Communication Operations Send(发送)/Send With Immdiate(带立即数据发送) Send操作允许发送数据到一个远程QP的receive queue中。Receiver必须已经提前post一个receiver buffer来接受数据。Sender无法控制数据会放到">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"right","display":"always","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/05/07/RDMA-2-Communication-Operations/"/>
+
+
+
+
+
+  <title>RDMA-2-通信操作相关概念 | icestrawberryxjw</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">icestrawberryxjw</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/07/RDMA-2-Communication-Operations/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="icestrawberryxjw">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="icestrawberryxjw">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">RDMA-2-通信操作相关概念</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-05-07T13:55:37+08:00">
+                2019-05-07
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/技术/" itemprop="url" rel="index">
+                    <span itemprop="name">技术</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/技术/RDMA/" itemprop="url" rel="index">
+                    <span itemprop="name">RDMA</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>版权声明：本文为 Jiawei Xu 于2019年5月7日所写，未经允许不得转载。</p>
+<h3 id="RDMA-Communication-Operations"><a href="#RDMA-Communication-Operations" class="headerlink" title="RDMA Communication Operations"></a>RDMA Communication Operations</h3><ol>
+<li><p><strong>Send(发送)/Send With Immdiate(带立即数据发送)</strong></p>
+<p>Send操作允许发送数据到一个远程QP的receive queue中。Receiver必须已经提前post一个receiver buffer来接受数据。Sender无法控制数据会放到远程主机的什么地方。</p>
+<p>带立即数据发送：通过线路发送消息和4字节的带外数据。立即值作为接受通知的一部分展现给receiver，但是不包含在data buffer中。</p>
+</li>
+<li><p><strong>Receive</strong></p>
+<p>接手主机被通知一个data buffer已经被接收了，可能带有一个inline immediate value。</p>
+</li>
+<li><p><strong>Read</strong></p>
+<p>caller指定远程虚拟地址和拷贝到本地的内存地址。在执行RDMA操作之前，远程主机必须提供适当的访问它内存的permission。一旦设置了这些permissions，RDMA read操作在进行时就不会通知远程主机。对于RDMA read和write，远程端不会意识到这些操作已经完成(除了permissions和resources的准备阶段)。</p>
+</li>
+<li><p><strong>Write/Write With Immdiate</strong></p>
+<p>write操作进行时不会通知远程主机。</p>
+<p>带立即数据的write操作，会通知远程主机immediate value。</p>
+</li>
+<li><p><strong>Atomic Fetch and Add/ Atomic Compare and Swap</strong></p>
+<p>这些是RDMA操作的扩展。</p>
+<p>Atomic fetch and add操作原子进行往一个特定虚拟地址上增加的指定的值。</p>
+<p>Atomic compare and swap操作原子比较一个特定虚拟地址的值，如果相等，那么改成一个指定的值。</p>
+</li>
+</ol>
+<h3 id="传输模式"><a href="#传输模式" class="headerlink" title="传输模式"></a>传输模式</h3><p>建立一个QP的时候可以选择不同的传输模式。</p>
+<p>这个API不支持RD。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">Operation</th>
+<th style="text-align:center">UD</th>
+<th style="text-align:center">UC</th>
+<th style="text-align:center">RC</th>
+<th style="text-align:center">RD</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">Send(with immediate)</td>
+<td style="text-align:center">x</td>
+<td style="text-align:center">x</td>
+<td style="text-align:center">x</td>
+<td style="text-align:center">x</td>
+</tr>
+<tr>
+<td style="text-align:center">Receive</td>
+<td style="text-align:center">x</td>
+<td style="text-align:center">x</td>
+<td style="text-align:center">x</td>
+<td style="text-align:center">x</td>
+</tr>
+<tr>
+<td style="text-align:center">RDMA Write(with immediate)</td>
+<td style="text-align:center"></td>
+<td style="text-align:center">x</td>
+<td style="text-align:center">x</td>
+<td style="text-align:center">x</td>
+</tr>
+<tr>
+<td style="text-align:center">RDMA read</td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+<td style="text-align:center">x</td>
+<td style="text-align:center">x</td>
+</tr>
+<tr>
+<td style="text-align:center">Atomic: Fetch and Add/Cmp and Swap</td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+<td style="text-align:center">x</td>
+<td style="text-align:center">x</td>
+</tr>
+<tr>
+<td style="text-align:center">Max message size</td>
+<td style="text-align:center">MTU</td>
+<td style="text-align:center">1GB</td>
+<td style="text-align:center">1GB</td>
+<td style="text-align:center">1GB</td>
+</tr>
+</tbody>
+</table>
+<ol>
+<li><p><strong>Reliable Connection(RC)</strong></p>
+<ul>
+<li><p>一个QP只和一个QP关联。</p>
+</li>
+<li><p>可靠传输、有序。</p>
+</li>
+<li><p>一个RC连接类似TCP连接。</p>
+</li>
+</ul>
+</li>
+<li><p><strong>Unreliable Connection(UC)</strong></p>
+<ul>
+<li><p>一个QP只和一个QP关联。</p>
+</li>
+<li><p>连接不可靠，可能会丢包。</p>
+</li>
+<li><p>错误的消息不会retry，错误处理需要有上层协议提供。</p>
+</li>
+</ul>
+</li>
+<li><p><strong>Unreliable Datagram(UD)</strong></p>
+<ul>
+<li><p>一个QP可能从其他QP接收或者向另其他QP发送单包消息。</p>
+</li>
+<li><p>不保证有序和送达。</p>
+</li>
+<li><p>receiver可能会丢弃包。</p>
+</li>
+<li>支持多播(一对多)。</li>
+<li>一个UD连接类似于一个UDP连接。</li>
+</ul>
+</li>
+</ol>
+<h3 id="关键概念"><a href="#关键概念" class="headerlink" title="关键概念"></a>关键概念</h3><ol>
+<li><p><strong>Send Request(SR)</strong></p>
+<p>一个SR定义了发送多少数据、从哪里发、发送方式、发到哪里。</p>
+<p>实现接口：<code>struct ib_send_wr</code></p>
+</li>
+<li><p><strong>Receive Request(RR)</strong></p>
+<p>一个RR定义了buffers，即非RDMA操作数据将要接收到哪里。如果没有定义buffer并且一个发送端试图进行一个send操作或者一个RDMA write with immediate，那么一个Receive Not Ready(RNR) error将会被发送。</p>
+<p>实现接口：<code>struct ibv_recv_wr</code></p>
+</li>
+<li><p><strong>Completion Queue</strong></p>
+<p>一个完成队列是一个对象，包含已经提交给Work Queues（WQ）中的完成了的work requests。每个完成的意思是一个特定的WR结束了(既可能是成功完成的WR，也可能是没有成功完成的WR)。</p>
+<p>一个CQ是一种机制，通知应用关于结束的Work Requests的信息(状态、操作码、大小、来源)。</p>
+<p>CQs有n个Completion Queue Entries(CQE)，当CQ被创建的时候，指定CQE的数量。</p>
+<p>当一个CQE被poll的时候，它就会从CQ中删除。</p>
+<p>CQ是CQE的FIFO队列。</p>
+<p>CQ可以是发送队列、接收队列或者两者皆是。</p>
+</li>
+<li><p><strong>Memeory Registration</strong></p>
+<p>内存注册是一种机制，允许一个应用程序使用虚拟地址向网卡把一系列虚拟上连续的内存位置或者一系列物理上连续的内存位置描述成一个虚拟上的连续缓存。</p>
+<p>注册过程固定内存页(来防止页被换出，保持物理地址和虚拟地址的映射)。</p>
+<p>在注册过程中，OS会检查被注册块的permissions。</p>
+<p>注册过程将虚拟地址表写到网卡中。</p>
+<p>当注册内存的时候，设定域的操作权限，有local write, remote read, remote write, atomic, bind。</p>
+<p>每个MR(内存域)有一个remote和local key(r_key, l_key)。local keys是本地HCA用来访问本地内存，例如说在一个接受操作中。Remote keys是给远程HCA来允许远程进程在RDMA操作中对系统内存进行访问。</p>
+<p>同一个内存缓存可以被注册多次(即便是用不同的访问权限)，并且每次注册都会生成不同的keys。</p>
+<p>接口：<code>struct ibv_mr</code></p>
+</li>
+<li><p><strong>Memory Window</strong></p>
+<p>一个MW允许应用程序对远程访问内存有灵活的控制。</p>
+<p>适用于：</p>
+<ul>
+<li>应用程序希望动态授予/撤回远程访问一个注册的域的权利，避免像注册/撤销注册/重复注册那样的性能开销。</li>
+<li>应用程序想要授予不同的远程agent不同的远程访问权限，或者在一个注册域的不同范围授予这些权限。</li>
+</ul>
+<p>将MW关联一个MR的操作叫做Binding。</p>
+<p>不同的MW可以重叠同一个MR(用不同的访问允许事件)。</p>
+</li>
+<li><p><strong>Address Vector</strong></p>
+<p>地址向量是一个对象，描述了本地节点和远程节点的路由。</p>
+<p>在每个UC/RC QP的QP context中有一个地址向量。</p>
+<p>在UD QP中，地址向量应该在每个提交发送请求中定义。</p>
+<p>接口：<code>struct ibv_ah</code></p>
+</li>
+<li><p><strong>Global Routing Header(GRH)</strong></p>
+<p>用在子网之间的路由，当使用RoCE时，GRH是用来子网内路由的，是一个mandatory，为了让应用程序支持IB和RoCE。</p>
+<p>当UD QP使用全局路由时，receiver buffer的前40个字节包含了GRH，这个区域用来存储全局路由信息，这样一个地址向量就能够产生来响应接收的数据包。如果UD使用了GRH，那么RR是应该始终有额外40字节。</p>
+<p>接口：<code>struct ibv_grh</code></p>
+</li>
+<li><p><strong>Protection Domain</strong></p>
+<p>是一个对象，里面的组件只能在其中互相交互。包含的组件有AH、QP、MR、SRQ。</p>
+<p>保护域用来关联QP和内存域与内存窗口，作为一种允许和控制网卡访问主机系统内存的方式。</p>
+<p>保护域也用来关联UD QP和AH，作为一种控制UD 目的地访问的方式。</p>
+<p>接口：<code>struct ibv_pd</code></p>
+</li>
+<li><p><strong>Asynchronous Events</strong></p>
+<p>网卡可能会发送异步事想件来通知SW关于在系统中发生的事件。</p>
+<p>有两种异步事件类型：</p>
+<ul>
+<li>affiliated events：发生在个人的对象(CQ、QP、SRQ)。这些事件将会发送给一个特定的进程。</li>
+<li>unaffiliated events：发生在全局对象上(网卡，端口错误)。这些事件将会发送给所有的进程。</li>
+</ul>
+</li>
+<li><p><strong>Scatter Gather</strong></p>
+<p>使用scatter gather elements收集/分发数据，包括：</p>
+<ul>
+<li>Address：将要gather或者scatter的本地数据缓存的地址。</li>
+<li>Size：要读或者写的数据的大小。</li>
+<li>L_key：MR的local key，注册了这段buffer。</li>
+</ul>
+<p>接口：<code>struct ibv_sge</code></p>
+</li>
+<li><p><strong>Polling</strong></p>
+<p>轮询CQ是否完成是为了获得一个已提交的WR的信息。</p>
+<p>如果在一个WR中有一个带有bad status的完成，那么剩下的completions都是坏的，并且工作队列将会被移动到error state。</p>
+<p>每个被轮询没有completion的WR都是outstanding的。</p>
+<p>只有在一个WR有一个completion之后，发送/接收buffer可能会被使用/复用/释放。</p>
+<p>completion status总是应该被检查。</p>
+<p>当一个CQE被轮询，就会从CQ中移除.</p>
+<p>轮询操作接口：<code>ibv_poll_cq</code></p>
+</li>
+</ol>
+<h3 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h3><p>RDMA Aware Programming User Manual.pdf</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/RDMA/" rel="tag"># RDMA</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/04/28/wireshark-lua/" rel="next" title="Wireshark配置Lua插件">
+                <i class="fa fa-chevron-left"></i> Wireshark配置Lua插件
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">icestrawberryxjw</p>
+              <p class="site-description motion-element" itemprop="description">The most difficult thing is the decision to act, the rest is merely tenacity.</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">18</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/icestrawberryxjw" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#RDMA-Communication-Operations"><span class="nav-number">1.</span> <span class="nav-text">RDMA Communication Operations</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#传输模式"><span class="nav-number">2.</span> <span class="nav-text">传输模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#关键概念"><span class="nav-number">3.</span> <span class="nav-text">关键概念</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Reference"><span class="nav-number">4.</span> <span class="nav-text">Reference</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2017 &mdash; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">icestrawberryxjw</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
