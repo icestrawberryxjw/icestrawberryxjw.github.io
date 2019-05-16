@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="icestrawberryxjw">
 <meta property="og:description" content="版权声明：本文为 Jiawei Xu 于2019年5月7日所写，未经允许不得转载。 RDMA Communication Operations Send(发送)/Send With Immdiate(带立即数据发送) Send操作允许发送数据到一个远程QP的receive queue中。Receiver必须已经提前post一个receiver buffer来接受数据。Sender无法控制数据会放到">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-05-08T06:52:24.379Z">
+<meta property="og:updated_time" content="2019-05-09T12:50:51.135Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="RDMA-2-通信操作相关概念">
 <meta name="twitter:description" content="版权声明：本文为 Jiawei Xu 于2019年5月7日所写，未经允许不得转载。 RDMA Communication Operations Send(发送)/Send With Immdiate(带立即数据发送) Send操作允许发送数据到一个远程QP的receive queue中。Receiver必须已经提前post一个receiver buffer来接受数据。Sender无法控制数据会放到">
@@ -494,13 +494,13 @@
 <p>CQ可以是发送队列、接收队列或者两者皆是。</p>
 </li>
 <li><p><strong>Memeory Registration</strong></p>
-<p>内存注册是一种机制，允许一个应用程序使用虚拟地址向网卡把一系列虚拟上连续的内存位置或者一系列物理上连续的内存位置描述成一个虚拟上的连续缓存。</p>
+<p>内存注册是一种机制，允许一个应用程序使用虚拟地址向网卡把一系列虚拟上连续的内存位置或者一系列物理上连续的内存位置描述成一个虚拟上的连续缓冲区。</p>
 <p>注册过程固定内存页(来防止页被换出，保持物理地址和虚拟地址的映射)。</p>
 <p>在注册过程中，OS会检查被注册块的permissions。</p>
 <p>注册过程将虚拟地址表写到网卡中。</p>
 <p>当注册内存的时候，设定域的操作权限，有local write, remote read, remote write, atomic, bind。</p>
 <p>每个MR(内存域)有一个remote和local key(r_key, l_key)。local keys是本地HCA用来访问本地内存，例如说在一个接受操作中。Remote keys是给远程HCA来允许远程进程在RDMA操作中对系统内存进行访问。</p>
-<p>同一个内存缓存可以被注册多次(即便是用不同的访问权限)，并且每次注册都会生成不同的keys。</p>
+<p>同一个内存buffer可以被注册多次(即便是用不同的访问权限)，并且每次注册都会生成不同的keys。</p>
 <p>接口：<code>struct ibv_mr</code></p>
 </li>
 <li><p><strong>Memory Window</strong></p>
@@ -541,7 +541,7 @@
 <li><p><strong>Scatter Gather</strong></p>
 <p>使用scatter gather elements收集/分发数据，包括：</p>
 <ul>
-<li>Address：将要gather或者scatter的本地数据缓存的地址。</li>
+<li>Address：将要gather或者scatter的本地数据buffer的地址。</li>
 <li>Size：要读或者写的数据的大小。</li>
 <li>L_key：MR的local key，注册了这段buffer。</li>
 </ul>
@@ -597,6 +597,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/05/09/Problem-solving-In-High-Performance-Computing-notes/" rel="prev" title="高性能计算的问题解决之道-笔记-更新中">
+                高性能计算的问题解决之道-笔记-更新中 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -673,7 +677,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">18</span>
+                  <span class="site-state-item-count">20</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -684,7 +688,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-count">13</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -695,7 +699,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-count">11</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

@@ -1,0 +1,943 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Linux," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="版权声明：本文为 Jiawei Xu 于2019年5月9日所写，未经允许不得转载。 关于书 中文书名：《高性能计算的问题解决之道——Linux态势感知方法、实用工具及实践技巧》  英文书名：Problem-solving in High Performance Computing——A Situational Awareness Approach with Linux  作者：Igor Ljubu">
+<meta name="keywords" content="Linux">
+<meta property="og:type" content="article">
+<meta property="og:title" content="高性能计算的问题解决之道-笔记-更新中">
+<meta property="og:url" content="http://yoursite.com/2019/05/09/Problem-solving-In-High-Performance-Computing-notes/index.html">
+<meta property="og:site_name" content="icestrawberryxjw">
+<meta property="og:description" content="版权声明：本文为 Jiawei Xu 于2019年5月9日所写，未经允许不得转载。 关于书 中文书名：《高性能计算的问题解决之道——Linux态势感知方法、实用工具及实践技巧》  英文书名：Problem-solving in High Performance Computing——A Situational Awareness Approach with Linux  作者：Igor Ljubu">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-05-16T05:07:29.817Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="高性能计算的问题解决之道-笔记-更新中">
+<meta name="twitter:description" content="版权声明：本文为 Jiawei Xu 于2019年5月9日所写，未经允许不得转载。 关于书 中文书名：《高性能计算的问题解决之道——Linux态势感知方法、实用工具及实践技巧》  英文书名：Problem-solving in High Performance Computing——A Situational Awareness Approach with Linux  作者：Igor Ljubu">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"right","display":"always","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/05/09/Problem-solving-In-High-Performance-Computing-notes/"/>
+
+
+
+
+
+  <title>高性能计算的问题解决之道-笔记-更新中 | icestrawberryxjw</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">icestrawberryxjw</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/09/Problem-solving-In-High-Performance-Computing-notes/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="icestrawberryxjw">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="icestrawberryxjw">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">高性能计算的问题解决之道-笔记-更新中</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-05-09T10:55:07+08:00">
+                2019-05-09
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/读书/" itemprop="url" rel="index">
+                    <span itemprop="name">读书</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/读书/计算机/" itemprop="url" rel="index">
+                    <span itemprop="name">计算机</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>版权声明：本文为 Jiawei Xu 于2019年5月9日所写，未经允许不得转载。</p>
+<h3 id="关于书"><a href="#关于书" class="headerlink" title="关于书"></a>关于书</h3><ul>
+<li><p>中文书名：《高性能计算的问题解决之道——Linux态势感知方法、实用工具及实践技巧》</p>
+</li>
+<li><p>英文书名：<em>Problem-solving in High Performance Computing——A Situational Awareness Approach with Linux</em></p>
+</li>
+<li>作者：Igor Ljubuncic，曾任Intel工程计算部门的操作系统架构师，为全球高性能Linux计算环境提供解决方案；曾任Rackspace云计算中心的熟悉工程师；目前是一名自由作家和商业顾问</li>
+<li>出版社：机械工业出版社</li>
+<li>简介/关键词：<ul>
+<li>高性能计算、大规模系统、故障停机</li>
+<li>整体态势感知方法：数学模型、最佳实践、监控配置</li>
+<li>在数据中心应该如何解决问题，方法论</li>
+<li>解决问题和研究的基本方法，常见陷阱</li>
+<li>常见应用程序和工具，建立起报告的症状与软硬件资源的实际行为之间的联系</li>
+<li>分析、刻画(profile)应用程序，以及分析内核本身</li>
+<li>内核崩溃分析和内核调试器的使用，kdump</li>
+<li>建立稳健有效的监测环境的考虑因素、方法、工具</li>
+<li>版本控制、配置管理方面</li>
+</ul>
+</li>
+</ul>
+<h3 id="笔记"><a href="#笔记" class="headerlink" title="笔记"></a>笔记</h3><h4 id="在一个数据中心如何动手解决问题"><a href="#在一个数据中心如何动手解决问题" class="headerlink" title="在一个数据中心如何动手解决问题"></a>在一个数据中心如何动手解决问题</h4><ol>
+<li><p>MTTF(Mean Time to Failure)：系统平均无故障时间</p>
+</li>
+<li><p>问题的识别：健康的怀疑态度、挑战惯例；探寻工具没有看到的问题；仔细留意现象。</p>
+</li>
+<li><p>问题的分类：</p>
+<ul>
+<li>真正的问题：与监控工具关联，预先分析过。</li>
+<li>误报的问题：由系统管理链的前述环节所引起的误报，包括人为和机器原因。</li>
+<li>虚假的问题：只对环境有间接影响的实际问题，但如果无人值守可能有显著影响。</li>
+</ul>
+</li>
+<li><p>使解决问题成为一门学科，而不是一个不稳定的随机的努力。</p>
+<p>面对问题，优先从简单熟悉的部分开始，不要上来做最坏的假设。过多的知识可能会导致误区。</p>
+</li>
+<li><p>事件通常有一个最大响应时间。服务级别协议SLA(service-level agreement)决定支持团队应该以多快的速度提供问题的解决方案。</p>
+</li>
+<li><p>停机规模、问题严重性、业务需求通常趋于零变化。</p>
+<p>从不能忽视的问题开始，以正确的分类跟进。要确保琐碎的可预测的问题转化为自动化(快速、熟悉、高度可见、便于管理过程中的理解)，集中智慧和技能去处理其余那些反反复复看似怪异的案例。</p>
+</li>
+<li><p>问题的再现</p>
+<ul>
+<li><p>隔离问题：实际绘制一张环境图示，用确定的、程式化的方式去捕获问题</p>
+</li>
+<li><p>偶发性问题需要特殊处理</p>
+<p>形成正反馈环路：减少未知因素的数目→显著地限制可能的空间→减少那些可能会出现的问题的发生→允许投入适量的精力去定义有用的、有意义的监控规则和阈值。</p>
+</li>
+</ul>
+</li>
+<li><p>学会根据情况暂停，重新设定研究，重新来过，放手，求教于别人or彻底去尝试别的问题，然后再回到这个问题。</p>
+</li>
+<li><p>Linux内核在发生kernel panic时会打印oops信息，把目前的寄存器状态、堆栈内容，以及完整的call trace都显示出来。然后用objdump反汇编工具找出出错的地方。</p>
+</li>
+<li><p>透明大页面：THP, Transparent Huge Pages</p>
+</li>
+<li><p>分析情况时，严格控制环境改变，减少环境的熵，如果改变，确保你知道预期结果是什么。</p>
+</li>
+<li><p>挑战</p>
+<ul>
+<li>业务环境中的制约因素</li>
+<li>需要关注核心问题，而不是容易看到的那些</li>
+<li>人会倾向于关注熟悉的和已知的问题</li>
+<li>监控工具会向易于量化的参数产生偏差</li>
+<li>对于大多数系统而言，大部分指标不能告诉你内部机制</li>
+</ul>
+</li>
+</ol>
+<h4 id="研究问题"><a href="#研究问题" class="headerlink" title="研究问题"></a>研究问题</h4><ol>
+<li><p>工作流程：识别问题，隔离问题，因果关系，改变环境</p>
+</li>
+<li><p>隔离问题：第一步是迁移问题，从生产环境迁移到一个隔离的测试配置。重新运行获得结果所需要的最小集。</p>
+</li>
+<li><p>监控在大多数情况下是反应性的，充其量它会确认你所察觉到的正常状态的变化，但并不知道为什么它已经改变。避免假设，逻辑流程中需要嵌入事实和数字。</p>
+</li>
+<li><p>辨别是程序错误还是特性。</p>
+</li>
+<li><p>建立明确的基准</p>
+<p>能够将现有的性能和系统运行状态与旧有的基线作比较是一个非常重要的能力，这将有助于保持你对环境的认识和控制。</p>
+</li>
+<li><p>必需指标：性能和行为</p>
+</li>
+<li><p>一次一个变量</p>
+</li>
+<li><p>线性复杂度的问题：研究、记录、建立数学公式映射问题和解决方案</p>
+<p>非线性问题：理解导致它们表现的触发器</p>
+</li>
+</ol>
+<h4 id="获取系统信息工具"><a href="#获取系统信息工具" class="headerlink" title="获取系统信息工具"></a>获取系统信息工具</h4><ol>
+<li><p><code>uptime</code> 命令：收集和报告系统负载情况、系统运行了多长时间以及当前登陆的用户数。</p>
+<p>系统负载是系统执行的计算工作量的度量，输出中从右到左依次是最后1分钟、5分钟、15分钟的平均值。</p>
+<ul>
+<li>完全空闲的系统的负载数量为0.00.</li>
+<li>使用或等待CPU的每个进程将负载数量递增1，负载量为1.00转换为单个CPU内核的完全利用。</li>
+<li>高负载值不一定转化为实际工作负载。相反，它们表示等待CPU的进程的平均数以及处于不间断睡眠状态(D状态，产生D状态的原因出现uninterruptible sleep状态的进程一般是因为在等待IO，例如磁盘IO、网络IO等。)的进程数。</li>
+</ul>
+</li>
+<li><p><code>top</code>命令：提供正在运行系统的动态实时视图，默认情况下每3s刷新一次。</p>
+<ul>
+<li><p><code>Tasks</code>字段列出系统上的任务总数(进程)、处于睡眠状态的个数、已被主动停止或正在追踪的进程、僵尸进程。</p>
+</li>
+<li><p><code>CPU(s)</code>：</p>
+<ul>
+<li>在用户空间中完成的计算标记为%us</li>
+<li>系统调用活动的百分比列在%sy下</li>
+<li>nice进程(即具有修改的调度优先级的进程)的比例显示在%ni下</li>
+<li>I/O活动(包括磁盘和网络)都反映在%wa中，CPU等待时间是存储和网络吞吐量的指示，即使CPU计算可能很低，也可能直接影响主机的负载和响应能力。</li>
+<li>硬件和软件中断以%hi和%si标记</li>
+<li>%st是指虚拟机管理程序从虚拟机中窃取的时间，因此它只与虚拟化环境相关。</li>
+</ul>
+<p>根据经验，非常高的%sy值通常表示内核空间中的问题。例如，可能存在显著的内存抖动，驱动程序可能会行为时常，或者其中一个组件可能存在硬件问题。</p>
+<p>非常高百分比的nice进程也意味着存在问题，因为可能由于用户偏好的优先级导致资源争用。</p>
+<p>如果遇到%wa值超过10%，则通常表示与性能相关的问题，这可能导致远程文件系统响应缓慢、网络拥塞、大量写入请求或交换引起的本地磁盘活动，以及类似的问题。</p>
+</li>
+<li><p><code>Mem</code>和<code>Swap</code>：当前内存子系统的使用情况</p>
+<ul>
+<li>free：虚拟内存中的空闲内存</li>
+<li>buffers：用于内存块设备的I/O缓冲区页面</li>
+<li>cached：页面缓存，包含需要写入磁盘的脏页面和最近读取请求中使用的页面。虽然缓存大小可能非常大，但是如果正在运行的程序请求额外的内存，它将会收缩。因此处于所有实际目的，用户可将缓存的内存视为空闲内存。</li>
+</ul>
+<p>释放所有缓存的操作可能需要一些时间才能完成，因为系统忙于将更改提交到磁盘。</p>
+<p><code>echo 3&gt; /proc/sys/vm/drop_caches</code></p>
+<p>强调缓存机制的另一种方法是下载、编译和运行memhog程序，这个工具使用在命令行中指定大量的内存，然后释放它，<code>./memhog 2048M</code></p>
+<p>top命令从/proc树收集信息，<code>cat /proc/meminfo</code></p>
+</li>
+<li><p>top锁定进程的默认显示包含其他有用的信息，包括任务运行的用户名、优先级、nice值、请求的内存分配、实际使用情况、共享内存、进程状态、CPU百分比、总可用物理内存的百分比、CPU时间和简短的命令行。在交互模式下工作时，可以用<code>-f</code>来更改字段。</p>
+</li>
+<li><p>几个有用的快捷方式</p>
+<ul>
+<li><code>-b</code>，在批处理模式下运行top</li>
+<li><code>-d</code>，更改刷新延迟(默认是3s)</li>
+<li><code>-u</code>，只显示匹配给定的UID或用户名的进程</li>
+<li><code>-p</code>，监控最多20个进程、以逗号分隔的一个列表</li>
+<li><code>-r</code>，以匹配的PID重调进程的优先级。正的值将降低进程优先级，某些负值只能由根进程使用，标准用户不能重调哪些属于其他用户的进程。</li>
+<li><code>-k</code>，以匹配的PID杀死进程。默认情况下，使用SIGTERM</li>
+<li><code>-q</code>，退出</li>
+</ul>
+</li>
+<li><p>区域命令，影响信息的显示方式</p>
+<ul>
+<li><code>t</code>，将根据任务状态显示进程</li>
+<li><code>m</code>，将根据内存和交换使用情况以自顶向下的方式显示它们</li>
+<li><code>1</code>，将切换CPU信息以单行显示所有内核，或单独显示</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><code>ps</code>命令：</p>
+<p>接收几个符号系统中的选项，包括BSD、UNIX和GNU，分别以无前缀、以单个破折号作为前缀、以两个破折号作为前缀来区分。</p>
+<p>显示系统上的每个进程<code>ps -ef</code></p>
+<p>BSD语法：<code>ps aux</code></p>
+<p>一些选项：</p>
+<ul>
+<li><code>-e|-A</code>：显示所有进程</li>
+<li><code>-u|--user</code>：只显示属于列举UID的任务</li>
+<li><code>-p|--pid</code>：通过其标识符(PID)选择特定的进程</li>
+<li><code>-ppid</code>：通过父进程选择</li>
+<li><code>-o</code>：用户指定的格式，以空格或逗号分隔值。</li>
+</ul>
+<p>一些UNIX语法的列名含义：</p>
+<ul>
+<li><code>TID</code>：线程ID，也称为轻量级进程(LWP)</li>
+<li><code>Rtprio</code>：实时优先级</li>
+<li><code>NI</code>：静态优先级</li>
+<li><code>PRI</code>：动态优先级</li>
+<li><code>PSR</code>：任务当前分配的处理器号</li>
+<li><code>WCHAN</code>：进程正在等待的最后一个内核函数(等待通道)。当调试进程似乎被卡住或停滞的时候，可能有用。</li>
+</ul>
+<p>BSD语法的列名含义：</p>
+<ul>
+<li><code>VSZ</code>：虚拟内存大小</li>
+<li><code>RSS</code>：驻留集大小</li>
+<li><code>STAT</code>：为每个显示的PID展示多字符的进程状态，”s”是指部门主管，”N”用于优先级较低的进程，”l”表示进程是多线程的。</li>
+<li><code>START</code>：指令启动的时间，只有过去一年中启动的进程才显示年份信息</li>
+<li><code>COMMAND</code>：进程命令行，直到打印缓冲区的最大宽度，通常是标准输出。内核线程记为方括号，它们的内存和CPU使用率将为0.</li>
+</ul>
+</li>
+</ol>
+<h4 id="系统日志"><a href="#系统日志" class="headerlink" title="系统日志"></a>系统日志</h4><ol>
+<li>日志的默认位置在<code>/var/log</code>下，标准系统日志通常是<code>/var/log/messages</code>或<code>/var/log/syslog</code></li>
+<li>研究流程应该是证据驱动的。</li>
+<li>一般来说，你可能不想更改服务器上的日志记录策略。但是你可以更改服务将其信息报告给系统日志的方式。使用NFS作为示例，如果正在排查似乎与网络存储相关的问题，那么可以暂时提升NFS服务或客户端的调试级别，收集额外信息，然后再将值还原到其原始状态。例如：<code>echo 32767 &gt;/proc/sys/sunrpc/nfs_debug</code>。在/proc下工作并立即对系统行为进行更改，是用来尝试隔离问题的一种非常有用的方法，也是可以提高性能和稳定性的测试场景。</li>
+<li><code>/var/log/kernellog</code>，该日志文件包含重新启动后内核打印的消息，与dmesg命令提供的数据相当，还可以获得时间戳，这在关联问题时可以用到。</li>
+<li>系统在启动顺序中提供的数据以及之前启动的数据：<code>boot.msg</code>，<code>boot.omsg</code></li>
+<li>其他有用的日志：cron、cups（Common UNIX Printing System，通用Unix打印系统）、audits（The Linux Audit Subsystem is a system to Collect information regarding events occurring on the system(s)<br>Kernel events (syscall events)）、mail、samba。</li>
+</ol>
+<p>更新中。。。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Linux/" rel="tag"># Linux</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/05/07/RDMA-2-Communication-Operations/" rel="next" title="RDMA-2-通信操作相关概念">
+                <i class="fa fa-chevron-left"></i> RDMA-2-通信操作相关概念
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/05/09/Book-list-2019/" rel="prev" title="2019年书单">
+                2019年书单 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">icestrawberryxjw</p>
+              <p class="site-description motion-element" itemprop="description">The most difficult thing is the decision to act, the rest is merely tenacity.</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">20</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">13</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/icestrawberryxjw" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#关于书"><span class="nav-number">1.</span> <span class="nav-text">关于书</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#笔记"><span class="nav-number">2.</span> <span class="nav-text">笔记</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#在一个数据中心如何动手解决问题"><span class="nav-number">2.1.</span> <span class="nav-text">在一个数据中心如何动手解决问题</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#研究问题"><span class="nav-number">2.2.</span> <span class="nav-text">研究问题</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#获取系统信息工具"><span class="nav-number">2.3.</span> <span class="nav-text">获取系统信息工具</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#系统日志"><span class="nav-number">2.4.</span> <span class="nav-text">系统日志</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2017 &mdash; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">icestrawberryxjw</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
