@@ -262,6 +262,613 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/06/ip-conf-file-inconsistency/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="icestrawberryxjw">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="icestrawberryxjw">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/03/06/ip-conf-file-inconsistency/" itemprop="url">解决Centos网卡IP和配置文件不符的问题</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-06T22:15:45+08:00">
+                2019-03-06
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/网络/" itemprop="url" rel="index">
+                    <span itemprop="name">网络</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>版权声明：本文为 Jiawei Xu 于2018年6月9日所写，未经允许不得转载。</p>
+<p>昨天发现连不上自己的服务器了，以为是网卡没起来或者网线被别人重插了，后来看了一下发现网卡起来了，ip也配的是对的，再ifconfig下，发现居然网卡em1用的是网卡em2的配置文件。如图：</p>
+<p><img src="https://icestrawberryxjwme-1255869739.cos.ap-shanghai.myqcloud.com/blogPic/2018060901.png" alt="2018060901"></p>
+<p>并且，修改em2的配置文件中的ip，em1会相应变化，推测em1和em2互用了对方的配置文件= =。</p>
+<p>使用nmcli查看，确实如此：</p>
+<p><img src="https://icestrawberryxjwme-1255869739.cos.ap-shanghai.myqcloud.com/blogPic/2018060902.png" alt="2018060902"></p>
+<p>在别的正常的服务器上，是这样的：</p>
+<p><img src="https://icestrawberryxjwme-1255869739.cos.ap-shanghai.myqcloud.com/blogPic/2018060903.png" alt="2018060903"></p>
+<p><strong>验证了我的猜测，下面是解决方案：</strong></p>
+<p>Red Hat Enterprise Linux 7 与 CentOS 7 中默认的网络服务由 NetworkManager 提供，这是动态控制及配置网络的守护进程，它用于保持当前网络设备及连接处于工作状态，同时也支持传统的 ifcfg 类型的配置文件。可以用<strong>命令行工具 nmcli</strong> 来控制 NetworkManager，相应的也有一个<strong>图形化的配置工具nmtui</strong>。</p>
+<p>NetworkManager 可以用于以下类型的连接：Ethernet，VLANS，Bridges，Bonds，Teams，Wi-Fi，mobile boradband（如移动3G）以及 IP-over-InfiniBand。针对与这些网络类型，NetworkManager 可以配置他们的网络别名，IP 地址，静态路由，DNS，VPN连接以及很多其它的特殊参数。 </p>
+<p><strong>一些Network Manager中的概念：</strong></p>
+<ul>
+<li>device叫网络接口，是物理设备</li>
+<li>connection是连接，偏重于逻辑设置</li>
+<li>多个connection可以应用到同一个device，但同一时间只能启用其中一个connection。这样的好处是针对一个网络接口，我们可以设置多个网络连接，比如静态IP和动态IP，再根据需要up相应的connection。</li>
+</ul>
+<p><strong>nmcli的具体用法可以参考manpage，下面是常用命令（单词可以不写全，比如connection写成con）：</strong></p>
+<ol>
+<li><p>nmcli modifiy命令修改网卡的具体配置，实际上编辑的是<code>/etc/sysconfig/network-scripts/ifcfg-*</code>文件。在不想使用该文件时，可以通过delete删除对应的连接：<code>nmcli connection delete ens3</code>。默认情况下通过nmcli add 或 modify的操作只是修改了配置文件，并不会立即生效，想要生效启用，需要通过“nmcli conn up 接口名” 来启用对应的配置。 </p>
+</li>
+<li><p><code>nmcli -p con up em1 ifname em1</code>修改设备连接的配置文件，<strong>只用这个来修改网卡使用的配置文件的话重启网卡之后就会无效！</strong>因为默认的网卡和配置文件之间的连接没有删除。</p>
+</li>
+<li><p><code>nmcli -p connection show &quot;em1&quot;</code> 显示em1连接配置集详情 </p>
+</li>
+<li><p><code>nmcli -p -m multiline -f all con show</code> 显示NetworkManager 连接配置集</p>
+</li>
+<li><p><code>nmcli -f name,autoconnect c s</code></p>
+</li>
+<li><p><code>nmcli connection show</code>查看当前的连接，terminal里未启用的是黄色，启用的是绿色。</p>
+</li>
+<li><p><code>nmcli connection show --active</code>仅查看活跃连接</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">[root@localhost ~]# nmcli connection show --active</div><div class="line">名称    UUID                                  类型            设备   </div><div class="line">em2     c67732e2-be50-4589-ad40-4537da423795  802-3-ethernet  em1    </div><div class="line">virbr0  4c0b2e32-9e55-472f-8693-03fda6c95847  bridge          virbr0`</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<h3 id="解决步骤："><a href="#解决步骤：" class="headerlink" title="解决步骤："></a><strong>解决步骤</strong>：</h3><p>一开始以为网卡的配置是单纯找对应网卡名称的配置文件，现在才知道是将网卡设备和逻辑接口连接起来，然后使用逻辑接口的配置文件。</p>
+<p>首先使用<code>nmcli connection delete CONNECTION_NAME</code>命令</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">nmcli connection delete em2     //把网卡em1和配置文件ifcfg-em2的连接断开</div></pre></td></tr></table></figure>
+<p>下一步，把网卡em1和接口em1匹配起来：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">nmcli connection add ifname em1 con-name em1 type ethernet //建立网卡em1和逻辑接口em1的连接</div></pre></td></tr></table></figure>
+<p>然后，使用<code>nmcli connection show</code>就可以看到增加了一条连接信息，显示黄色说明还没有启动。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">nmcli connection delete be36eaf2011de-43ab-9ff6-58b32796a444 //删掉下图绿色下面一行的未启动的网卡em2和逻辑接口em1的连接</div><div class="line">nmcli connection add ifname em2 con-name em2 type ethernet //建立网卡em2和逻辑接口em2的连接</div></pre></td></tr></table></figure>
+<p><img src="https://icestrawberryxjwme-1255869739.cos.ap-shanghai.myqcloud.com/blogPic/2018060904.jpg" alt="2018060904"></p>
+<p>但是，因为刚刚建立网卡em1和逻辑接口em1的时候，网卡em2和逻辑接口em1的连接还没删除，所以在/etc/sysconfig/network-scripts里面会出现ifcfg-em1-1，把文件名改成ifcfg-em1，需要在里面配置好静态ip、网关等信息然后保存。</p>
+<p>再次用<code>nmcli connection show</code>查看，发现网卡em1和逻辑接口em1连接了，网卡em2和逻辑接口em2连接了，原来的连接断开了。但是em1的连接没有启用（红色）。</p>
+<p>用nmtui编辑连接后，ifcfg文件也会有相应的改动；手工修改ifcfg后，nmtui中也能看到。<br>但是，<strong>不论用nmtui还是直接修改ifcfg文件，想让新的配置生效，需要load连接配置文件并重新up连接。</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">nmcli con load /etc/sysconfig/network-scripts/ifcfg-em1</div><div class="line">nmcli con load /etc/sysconfig/network-scripts/ifcfg-em2</div><div class="line">nmcli con up em1</div></pre></td></tr></table></figure>
+<p>再次用<code>nmcli connection show</code>查看，发现网卡em1和逻辑接口em1连接启用了（显示绿色）</p>
+<p><img src="https://icestrawberryxjwme-1255869739.cos.ap-shanghai.myqcloud.com/blogPic/2018060905.jpg" alt="2018060905"></p>
+<p>服务器重启之后，配置依然有效，至此解决。</p>
+<p>参考资料：</p>
+<ol>
+<li><a href="https://www.cnblogs.com/panblack/p/Centos7-WhatsNew-02-networking.html" target="_blank" rel="external">https://www.cnblogs.com/panblack/p/Centos7-WhatsNew-02-networking.html</a></li>
+<li>nmcli(1) Linux man page</li>
+</ol>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/06/promiscuous-mode/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="icestrawberryxjw">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="icestrawberryxjw">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/03/06/promiscuous-mode/" itemprop="url">关于网卡的混杂模式</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-06T22:13:00+08:00">
+                2019-03-06
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/网络/" itemprop="url" rel="index">
+                    <span itemprop="name">网络</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>版权声明：本文为 Jiawei Xu 于2018年6月9日所写，未经允许不得转载。</p>
+<p>tcpdump的一个副作用就是可以让网卡进入混杂模式。每次tcpdump，都会在/var/log/messages里看到这样：</p>
+<p><img src="https://icestrawberryxjwme-1255869739.cos.ap-shanghai.myqcloud.com/blogPic/2018060907.png" alt="2018060907"></p>
+<p>实际上，网卡是否处于PROMISC模式，ifconfig（ip link show也是如此）并不是最直接的判断依据，换句话说就是ifconfig能看到PROMISC标记表示一定处于混杂模式，但处于混杂模式并不一定能看到PROMISC标记。内核判断网卡是否处于混杂模式是看<code>/sys/class/net/ifname/flags</code>的值，如果置位了0x100，则处于混杂模式。</p>
+<p><img src="https://icestrawberryxjwme-1255869739.cos.ap-shanghai.myqcloud.com/blogPic/2018060906.png" alt="2018060906"></p>
+<ul>
+<li><strong>混杂模式的ifconfig和ip link show都按看不到的问题</strong></li>
+</ul>
+<p><a href="http://seclists.org/bugtraq/2002/Jul/302有这样的解释" target="_blank" rel="external">http://seclists.org/bugtraq/2002/Jul/302有这样的解释</a></p>
+<blockquote>
+<p>This is a well knwon issue and C. Grenier and I have understood why<br>very recently. In fact, this due to the changing of the handling of<br>promiscuous mode in kernel space.</p>
+<p>With kernel 2.0, one had to perform the following to set the interface<br>to promiscuous mode:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&gt; <span class="built_in">strncpy</span>(ifr.ifr_name, <span class="string">"eth0"</span>, IFNAMSIZ);</div><div class="line">&gt; ioctl(sock, SIOCGIFFLAGS, &amp;ifr);</div><div class="line">&gt; ifr.ifr_flags |= IFF_PROMISC;</div><div class="line">&gt; ioctl(sock, SIOCSIFFLAGS, &amp;ifr);</div><div class="line">&gt;</div></pre></td></tr></table></figure>
+</blockquote>
+<p>&gt;</p>
+<blockquote>
+<p>The trouble was that the promiscuous mode was handled by a flag.  Each<br>time a process sets this mode, the flag is set. But if another process<br>removes this mode, the flag is cleared. Rather bad behavior.</p>
+<p>Since kernel 2.2, a processus must ask to enter in a membership of<br>process (setsockopt(…, PACKET_ADD_MEMBERSHIP,…)) using the<br>interface in promiscuous mode. A counter is then increased. One a<br>process of the membership does not need the promiscuous mode anymore,<br>it drops the membership (setsockopt(…, PACKET_DROP_MEMBERSHIP, …))<br>the counter is decreased, and promiscuous mode is disabled as soon as<br>the counter is 0. </p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">&gt; <span class="class"><span class="keyword">struct</span> <span class="title">packet_mreq</span> <span class="title">mr</span>;</span></div><div class="line">&gt; ...</div><div class="line">&gt; <span class="built_in">memset</span>(mr,<span class="number">0</span>,<span class="keyword">sizeof</span>(mr));</div><div class="line">&gt; mr.mr_ifindex = ifr.ifr_ifindex;</div><div class="line">&gt; mr.mr_type =  PACKET_MR_PROMISC;</div><div class="line">&gt; setsockopt(sock, SOL_PACKET, PACKET_ADD_MEMBERSHIP, (<span class="keyword">char</span> *)&amp;mr, <span class="keyword">sizeof</span>(mr));</div><div class="line">&gt;</div></pre></td></tr></table></figure>
+</blockquote>
+<p>&gt;</p>
+<blockquote>
+<p>The call to ioctl(SIOCGIFFLAGS) reports only promiscuous mode sets by<br>ioctl(SIOCSIFFLAGS).</p>
+</blockquote>
+<p>参考资料：</p>
+<ol>
+<li><a href="https://ieevee.com/tech/2016/11/24/promisc.html" target="_blank" rel="external">https://ieevee.com/tech/2016/11/24/promisc.html</a></li>
+<li><a href="http://seclists.org/bugtraq/2002/Jul/302" target="_blank" rel="external">http://seclists.org/bugtraq/2002/Jul/302</a></li>
+</ol>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/06/CplusPrimerChapter9-mem-manage-note/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="icestrawberryxjw">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="icestrawberryxjw">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/03/06/CplusPrimerChapter9-mem-manage-note/" itemprop="url">C++内存模型</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-06T21:58:50+08:00">
+                2019-03-06
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/技术/" itemprop="url" rel="index">
+                    <span itemprop="name">技术</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/技术/C/" itemprop="url" rel="index">
+                    <span itemprop="name">C++</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p><em>C++ Primer Plus</em> 第九章的内存模型 笔记整理。—— Jiawei Xu 2019年3月6日</p>
+<hr>
+<p><strong>关键字：</strong>存储持续性、链接性、作用域、初始化、单定义规则、存储说明符（auto, register, static, extern, mutable, thread_local）、CV限定符（const, volatile）、名称修饰/矫正/C++语言链接性</p>
+<h4 id="变量内存管理-存储持续性"><a href="#变量内存管理-存储持续性" class="headerlink" title="变量内存管理-存储持续性"></a>变量内存管理-存储持续性</h4><p>C++使用三种（在C++11中是四种）不同的方案来存储数据，这些方案的区别在于数据保留在内存中的时间。</p>
+<ul>
+<li><p><strong>自动存储持续性</strong>（栈）：</p>
+<p>在函数定义中声明的变量（包括函数参数）的存储持续性为自动的。它们在程序开始执行其所属的函数或代码块时被创建，在执行完函数或代码块时，它们的内存被释放。<strong>C++有两种存储持续性为自动的变量</strong>：局部变量和register关键字。</p>
+</li>
+<li><p><strong>静态存储持续性</strong>（全局变量/外部变量、static）：</p>
+<p>在函数定义外定义的变量和使用关键字static定义的变量的存储持续性都为<strong>静态</strong>。它们在程序整个运行过程中都存在。</p>
+<p><strong>C++有三种存储持续性为静态的变量</strong>，在整个程序执行期间存在，未被初始化的静态变量默认为0，静态数组和结果的每个元素和成员的所有位都置为0，这种变量被称为<strong>零初始化</strong>的(zero-initialized)：</p>
+<ul>
+<li><strong>外部链接性external linkage</strong>：可在其他文件中访问，格式：代码块外面声明</li>
+<li><strong>内部链接性internal linkage</strong>：只能在当前文件中访问，格式：代码块外面声明+static限定符</li>
+<li><strong>无连接性static linkage</strong>：只能在当前函数或代码块中访问，格式：代码块内声明+static限定符</li>
+</ul>
+</li>
+<li><p><strong>动态存储持续性</strong>（堆/自由存储）：</p>
+<p>用new运算符分配的内存将一直存在，直到使用delete运算符将其释放或程序结束为止。这种内存的持续性为动态，有时候被称为自由存储(free store)或堆(heap)。</p>
+</li>
+<li><p><strong>线程存储持续性</strong>（C++11、并行编程、thread_local）</p>
+<p>如果变量使用关键字<strong>thread_local</strong>声明的，则其生命周期与所属的线程一样长，并行编程的内容。thread_local之于线程，犹如常规静态变量之于整个程序。</p>
+</li>
+</ul>
+<h4 id="链接性（linkage）"><a href="#链接性（linkage）" class="headerlink" title="链接性（linkage）"></a>链接性（linkage）</h4><p>描述了名称如何在不同单元间共享。链接性在外部的名称可在文件间共享，链接性在内部的名称只能由一个文件中的函数共享。</p>
+<h4 id="作用域（scope）"><a href="#作用域（scope）" class="headerlink" title="作用域（scope）"></a>作用域（scope）</h4><p>文件作用域（作用域为全局）：从定义位置到文件结尾之间可用。</p>
+<p>局部作用域（自动变量，automatic variable）：局部。</p>
+<p>静态变量的作用域：全局还是局部取决于如何被定义。</p>
+<p>函数原型作用域(function prototype scope)中使用的名称只在包含参数列表的括号内可用。</p>
+<p>类中声明的成员的作用域：整个类。</p>
+<p>在名称空间中声明的变量的作用域为整个名称空间，全局作用域是名称空间作用域的特例。</p>
+<h4 id="Auto"><a href="#Auto" class="headerlink" title="Auto"></a>Auto</h4><p>C和C++11之前，用于显式地指出变量为自动存储</p>
+<p>C++11中，用于自动类型推断</p>
+<h4 id="寄存器变量Register"><a href="#寄存器变量Register" class="headerlink" title="寄存器变量Register"></a>寄存器变量Register</h4><p>C和C++11之前，建议编译器使用CPU寄存器来存储自动变量，旨在提高访问变量的速度；</p>
+<p>C++11中，用于显式地指出变量是自动的，作用域为代码块，在代码块中声明，无链接性。</p>
+<h4 id="初始化"><a href="#初始化" class="headerlink" title="初始化"></a>初始化</h4><ul>
+<li><p>静态初始化=零初始化+常量表达式初始化（sizeof运算符也包括）</p>
+<p>在编译器处理文件时初始化</p>
+</li>
+<li><p>动态初始化：</p>
+<p>在编译后初始化</p>
+</li>
+<li><p>C++新增关键字constexpr</p>
+<p>创建常量表达式的方式</p>
+</li>
+</ul>
+<h4 id="外部-全局变量的C-单定义规则-One-Definition-Rule-ODR"><a href="#外部-全局变量的C-单定义规则-One-Definition-Rule-ODR" class="headerlink" title="外部/全局变量的C++单定义规则(One Definition Rule, ODR)"></a>外部/全局变量的C++单定义规则(One Definition Rule, ODR)</h4><p><strong>外部变量</strong>：链接性为外部的变量，存储持续性为静态，作用域为整个文件。也称全局变量。</p>
+<p>如果要在多个文件中使用外部变量，只需要在一个文件里包含定义，但是其他文件使用的时候都要用extern声明。</p>
+<p>两种外部变量声明的方式：</p>
+<ul>
+<li><p>定义声明/定义defining declaring/definition（给变量分配存储空间）</p>
+</li>
+<li><p>引用申明/声明 referencing declaration/declaration（不给变量分配存储空间）</p>
+<p>方法：在变量前面用<strong>关键字extern</strong>，且不进行初始化（两个条件都要满足，否则声明为定义，会分配存储空间）</p>
+<p><strong>C++中的作用域解析运算符(::)</strong>：放在变量名前，该运算符表示使用变量的全局版本（更安全，不依赖于作用域）</p>
+</li>
+</ul>
+<p>在多文件程序中，可以在一个文件（且只能在一个文件）定义一个外部变量，使用它的其他文件必须使用关键字extern声明它。</p>
+<h4 id="存储说明符"><a href="#存储说明符" class="headerlink" title="存储说明符"></a>存储说明符</h4><ul>
+<li>auto（C++11之后不再是说明符）</li>
+<li>register</li>
+<li>static</li>
+<li>extern</li>
+<li>thread_local（C++11新增）</li>
+<li>mutable：即使结构（或类）变量为const，其某个成员也可以被修改，</li>
+</ul>
+<h4 id="CV-限定符"><a href="#CV-限定符" class="headerlink" title="CV-限定符"></a>CV-限定符</h4><ul>
+<li>const：在C++中，const限定符对默认存储类型有影响。在默认情况下全局变量的链接性为外部的，但const全局变量的链接性为内部的。<ul>
+<li>在C++下，全局const定义就像是使用了static说明符一样。</li>
+<li>可以使用extern关键字覆盖默认的内部链接性<code>extern const int states=50;</code>，鉴于单个const在多个文件间共享，因此只有一个文件可对其进行初始化。</li>
+<li>在函数或代码块中声明const时，作用域为代码块。</li>
+</ul>
+</li>
+<li>volatile：即使程序代码没有对内存单元进行修改，其值也可能发生变化。作用是为了改善编译器的优化能力。例如，假设编译器发现，程序在几条语句中两次使用了某个变量的值，则编译器可能不是让程序查找这个值两次，而是将这个值缓存到寄存器中。这种优化假设变量的值在这两次使用之间不会变化。如果不将变量声明为volatile。则编译器将进行这种优化；将变量声明为volatile，相当于告诉编译器不要进行这种优化。</li>
+</ul>
+<h4 id="函数链接性"><a href="#函数链接性" class="headerlink" title="函数链接性"></a>函数链接性</h4><ul>
+<li><p>所有函数的存储持续性都自动为静态的。默认情况下，函数的链接性为外部的，可以在文件间共享。、</p>
+</li>
+<li><p>可以使用static将函数的链接性设置为内部的，使之只能在一个文件中使用。必须同时在原型和函数定义中使用该关键字。于是，可以在其他文件中定义同名的函数，和变量一样，在定义静态函数的文件中，静态函数将覆盖外部定义。</p>
+</li>
+<li>单定义规则也适用于非内联函数，对于每个非内联函数，程序只能包含一个定义。对于链接性为外部的函数来说，多文件程序中，只能有一个文件包含该函数的定义，但使用该函数的每个文件都应包含其函数原型。</li>
+</ul>
+<h4 id="C-查找函数定义的顺序"><a href="#C-查找函数定义的顺序" class="headerlink" title="C++查找函数定义的顺序"></a>C++查找函数定义的顺序</h4><ul>
+<li>静态函数：本文件</li>
+<li>所有程序文件-&gt;没找到的话，在库中搜索</li>
+</ul>
+<h4 id="名称矫正-名称修饰-C-语言链接"><a href="#名称矫正-名称修饰-C-语言链接" class="headerlink" title="名称矫正/名称修饰/C++语言链接"></a>名称矫正/名称修饰/C++语言链接</h4><p>在C++中，同一个名称可能对应多个函数，必须将这些函数翻译为不同的符号名称，这种方法被称为C++语言链接（C++ language linkage）。方式：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">extern &quot;C&quot; void spiff(int)  //使用C语言链接性</div><div class="line">extern void spiff(int) 		//使用C++语言链接性</div><div class="line">extern &quot;C++&quot; void spiff(int) 		//使用C++语言链接性</div></pre></td></tr></table></figure>
+<h4 id="动态内存"><a href="#动态内存" class="headerlink" title="动态内存"></a>动态内存</h4><p>含义：使用C++运算符new(或C函数malloc())分配的内存。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/02/25/FreeFlow-note/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1223,7 +1830,7 @@
 <ul>
 <li>添加以下内容</li>
 </ul>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#</span><span class="bash">!/bin/sh </span></div><div class="line">git --work-tree=your_work_dir --git-dir=/root/gitrepo/test.git checkout -f</div></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#</span>!/bin/sh </div><div class="line">git --work-tree=your_work_dir --git-dir=/root/gitrepo/test.git checkout -f</div></pre></td></tr></table></figure>
 <ul>
 <li>保存退出</li>
 </ul>
@@ -1730,7 +2337,10 @@
 </ol>
 </li>
 </ul>
+<pre><code>- 裸库 删除git之后恢复
 
+  <figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">git init</div><div class="line">git remote add origin /home/gitrepo/...</div><div class="line">git status</div><div class="line">git add .</div><div class="line">git commit</div></pre></td></tr></table></figure>
+</code></pre>
           
         
       
@@ -1931,818 +2541,11 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/03/22/Voyager-Complete-Container-State-Migration-ICDCS-2017/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="icestrawberryxjw">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="icestrawberryxjw">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/03/22/Voyager-Complete-Container-State-Migration-ICDCS-2017/" itemprop="url">Voyager-Complete Container State Migration (ICDCS 2017)</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-22T12:14:30+08:00">
-                2018-03-22
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/科研论文笔记/" itemprop="url" rel="index">
-                    <span itemprop="name">科研论文笔记</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>版权声明：本文为 Jiawei Xu 于2018年3月22日所写，未经允许不得转载。</p>
-<h1 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h1><ul>
-<li><p>容器虚拟化的优点</p>
-<ol>
-<li>内存小</li>
-<li>启动快</li>
-</ol>
-</li>
-<li><p>建立PaaS、SaaS云</p>
-</li>
-<li><p>本文提出Voyager及时动态容器迁移服务</p>
-</li>
-<li><p>基于Open Container Initiative(OCI) principles</p>
-<p>  OCI的使命是推动围绕容器技术制定一套共同的、最小的、开放的标准和规范。</p>
-<p>  governing principles of the OCI：</p>
-<ul>
-<li>Technology leadership</li>
-<li>Influence through contribution</li>
-<li>Limited scope, limited politics</li>
-<li>Minimalist structure</li>
-<li>Representative leadership</li>
-<li>Adherence to anti-trust regulations</li>
-</ul>
-</li>
-<li><p>Voyager是一种文件系统无关、提供商无关的迁移服务，提供一致的全系统的迁移</p>
-</li>
-<li>将CRIU检查点/恢复用户空间（Checkpoint/Restore in Userspace）和联合挂载数据联合能力（Data federation capabilities of union mounts）结合起来最小化迁移停机时间</li>
-<li><p><strong>概念1—CRIU检查点/恢复用户空间（Checkpoint/Restore in Userspace）</strong></p>
-<blockquote>
-<p>检查点/恢复用户空间（或CRIU）是Linux操作系统的软件工具，为Linux实现检查点/恢复功能。 使用此工具，您可以冻结正在运行的应用程序（或其中的一部分），并将其检查为磁盘上的文件集合。 然后，您可以使用这些文件来恢复应用程序，并在冻结期间完全运行它。 有了这个功能，应用程序实时迁移，快照，远程调试，以及其他许多事情都是可能的。</p>
-</blockquote>
-</li>
-<li><p>利用源和目的主机之间数据的联合视图，Voyager容器可以立刻在目标主机上恢复操作，在后台实施磁盘状态转移，以按需的方式（Copy-on-Write）或者通过lazy replication</p>
-</li>
-</ul>
-<h1 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h1><ul>
-<li><p>现有的迁移服务的缺陷</p>
-<ul>
-<li>提供仅内存的迁移</li>
-<li>依靠指定文件系统去迁移持久性存储（migrate persistent storage ）</li>
-</ul>
-</li>
-<li><p><strong>概念2—数据联合</strong></p>
-<p>  从不同的源汇聚数据到一个虚拟的数据库，用数据联合软件建立的这个虚拟数据库不包含数据本身，它包含的是实际数据的信息和位置，实际的数据仍在原来的位置。</p>
-<p>  数据联合技术可以被用作数据仓库，以节省建立一个永久的物理的关系型数据库的代价。</p>
-<blockquote>
-<p>Data federation software is programming that provides an organization with the ability to aggregate data from disparate sources in a virtual database so it can be used for business intelligence (BI) or other analysis. The virtual database created by data federation software doesn’t contain the data itself. Instead, it contains information about the actual data and its location (see metadata). The actual data is left in place.</p>
-<p>Data federation technology can be used in place of a data warehouse to save the cost of creating a permanent, physical relational database. It can also be used as an enhancement to add fields or attributes that are not supported by the data warehouse application programming interface (API). This approach is especially useful if some of an organization’s data is stored offsite by a third-party cloud service provider. It allows the person performing the analysis to aggregate and organize data quickly without having to request synchronization logic or copy the data until it’s absolutely necessary.</p>
-<p>Making a single call to multiple data sources and then integrating and organizing the data in a middleware layer is also called data virtualization, enterprise information integration (EII) and information-as-a-service, depending on the vendor.</p>
-</blockquote>
-</li>
-<li><p>Enhancements中开源的部分</p>
-<ul>
-<li>内存迁移</li>
-<li>符合OCI规则</li>
-<li>支持多数据存储类型（rootfs、本地和网络附加数据卷）</li>
-</ul>
-</li>
-</ul>
-<h1 id="Background-and-相关工作"><a href="#Background-and-相关工作" class="headerlink" title="Background and 相关工作"></a>Background and 相关工作</h1><h2 id="VM迁移"><a href="#VM迁移" class="headerlink" title="VM迁移"></a>VM迁移</h2><p>不同的供应商使用不同的虚拟磁盘（vDisk）格式（例如vmdk、VHD、qcow2）来封装一个虚拟机的持久性状态，通过专有系统管理程序辅助（例如vMotion、Hyper-V动态迁移、第三方工具）或通过hypervisor之间的显式vDisk转化来迁移。</p>
-<p>已有VMs上的提供商不可知的基于文件的迁移方案，例如I2Map和racemi，但是需要在系统中安装额外的agent。</p>
-<h2 id="容器迁移"><a href="#容器迁移" class="headerlink" title="容器迁移"></a>容器迁移</h2><ul>
-<li>容器被OCI标准化，制定一个容器镜像格式的工业标准——一个文件包或rootfs和多数据卷，这些是主机文件系统上重要的目录</li>
-<li>可以为容器设计一个通用的基于文件的迁移方案。</li>
-<li>有些容器云提供VM来放容器，主要是减少对容器安全性和隔离性的担心，其他的是直接在云主机上运行容器。为了迁移安装VM违反了使用容器进行应用部署的优势。</li>
-<li>尽管看上去对于无状态的容器化应用来说，容器迁移是冗余的，但是对于有些状态微服务应用（例如Mysql、cassandra）、消息代理（kafka）、状态协调服务（zookeeper）来说是有意义的。</li>
-<li>标准框架：Kubernetes StatefulSet</li>
-<li>状态容器的可移植性——已有的解决方案：ClusterHQ’s Flocker, Virtuozzo, Picocenter<ul>
-<li>Flocker<ol>
-<li>主要是一个主要针对容器的数据管理解决方案。</li>
-<li>通过重新附加网络存储器的方式支持网络附加存储（NAS）后端（如Amazon EBS，Openstack Cinder，VMware vSphere等）的迁移。</li>
-<li>本地附加数据卷的迁移仅支持ZFS文件系统。</li>
-<li>对比：Voyager是一个通用的文件系统不可知、提供商不可知的迁移解决方案。</li>
-</ol>
-</li>
-<li>Virtuozzo<ol>
-<li>是一个裸机虚拟化解决方案，包括容器虚拟化</li>
-<li>促进了容器动态迁移的零停机时间</li>
-<li>在迁移过程中，首先向目标主机转移容器文件系统和虚拟内存，一旦转移完成之后，它将冻结所有容器进程和关闭网络，然后把内存状态dump到文件中，拷贝dump文件到目标主机。</li>
-<li>任何在最后一次转移之后改变的内存和磁盘块都迁移到目标主机，然后容器恢复。</li>
-<li>隐含的假设是变化的内存页和磁盘块的数量（<em>deltas</em>）很小，因此中断时间是微小的。（缺陷）但是对于数据密集型应用，这些<em>deltas</em>特别是持久性数据变化可能很大。</li>
-<li>对比：Voyager和它两方面不同：a. Voyager是一个及时零拷贝迁移解决方案，在将整个数据拷贝到目标主机之前立刻迁移容器。b. Voyager不需要Virtuozzo的第二次数据转移的任务，因此应用停机时间会更小。c. Voyager提供一些特性比如说数据联合访问、双带宽数据复制、遵循OCI原则，这些事现有的容器迁移解决方案不具备的。</li>
-</ol>
-</li>
-<li>Picocenter<ol>
-<li>一个允许换出对象存储云里面不活跃的容器、按需求换进（活跃的容器）的系统。</li>
-<li>它使用CRIU来获取和迁移内存状态和持久性状态的<em>btrfs</em>文件系统快照。</li>
-<li>提了一个内存的<em>ActiveSet</em>功能：内存中的页被恢复为容器访问 and lazily。</li>
-<li>同样也是一个特定于文件系统的解决方案，并未针对容器迁移用例进行优化。（缺陷）</li>
-</ol>
-</li>
-</ul>
-</li>
-</ul>
-<p><strong>CRIU Page server model</strong></p>
-<p><a href="https://criu.org/Page_server" target="_blank" rel="external">https://criu.org/Page_server</a></p>
-<blockquote>
-<p><strong>Page server</strong> is a component of CRIU that allows to copy (rather than dump) user memory to a destination system during the course of live migration. It is also used for <strong>lazy migration</strong>.</p>
-</blockquote>
-<p>Page server： 在动态迁移期间，允许拷贝用户内存 到 目的系统而不是dump的方式。</p>
-<p><strong>Lazy migration</strong></p>
-<p><a href="https://criu.org/Lazy_migration" target="_blank" rel="external">https://criu.org/Lazy_migration</a></p>
-<blockquote>
-<p>Lazy, or post-copy memory migration, allows to minimize application downtime. Unlike pre-copy memory migration, lazy migration does not copy the task’s memory, but rather keeps the memory pages at the source node. Only the minimal task state required to start the application is copied to the destination node and the task is resumed there. When the task accesses missing memory pages, criu processes the page faults, transfers the required page from the source node and injects it into the running task address space.</p>
-</blockquote>
-<p>定义：不像pre-copy memory migration，lazy migration不拷贝task的内存，将内存页还留在源节点。只拷贝启动应用需要的最小的任务状态到目的节点，然而任务在目的节点恢复。如果task需要访问缺少的内存页，CRIU就处理缺页，从源节点传送需要的页，将它插入到正在运行的task的地址空间。</p>
-<h1 id="设计和实现"><a href="#设计和实现" class="headerlink" title="设计和实现"></a>设计和实现</h1><ul>
-<li><p>容器的镜像存储方式有两种：rootfs 和 数据卷</p>
-<ol>
-<li>根据OCI规范，每个容器镜像都存储在一个文件系统包中，它在解包后变成主机文件系统中的另一个目录——rootfs。在容器初始化的时候，所有运行时的环境改变（如，新的包的安装）以及数据改变（如应用程序状态和日志）在默认情况下会被存放在rootfs中。因为运行时状态会动态改变，因此在本地文件系统中托管rootfs也符合性能观点。</li>
-<li>主机文件系统的任何目录都可以绑定挂载到容器内作为数据卷。这样的一个卷也可以是一个挂载在主机上的网络附属文件系统。类似地，尽管很少，任何主机上的块设备也可以映射到容器中。对于不稳定的状态，容器会通过cgroups共享控制主机的内存。</li>
-</ol>
-</li>
-<li><p>容器迁移的步骤</p>
-<ol>
-<li>发现该容器的所有数据终端、移动它们的状态和内存状态，并保持源主机和目标主机之间的一致。</li>
-<li>内存中的状态迁移可以在用户空间内通过CRIU来实现。</li>
-<li>同样，任何网络附属存储可以通过把它从源主机中卸载，并将其挂载到目标主机上来实现。</li>
-<li>Voyager提供了用户空间级的文件系统无关的本地持续性容器状态迁移，同时保证跨这些状态的一致性，以及最小化应用程序的停机时间。</li>
-<li>图1展示了完整的Voyager的编排框架。我们主要是跨三个不同的数据存储来迁移容器状态，即内存中、本地文件系统、网络文件系统。</li>
-</ol>
-</li>
-</ul>
-<p>总结：步骤是 内存状态迁移-&gt;CRIU实现，NAS-&gt;(un)mount实现</p>
-<h2 id="三种迁移："><a href="#三种迁移：" class="headerlink" title="三种迁移："></a>三种迁移：</h2><h3 id="A-In-memory状态迁移："><a href="#A-In-memory状态迁移：" class="headerlink" title="A. In-memory状态迁移："></a>A. In-memory状态迁移：</h3><p>++这一部分的主要工作++：为优化checkpoint内存的时间，在<em>action script</em>中提供了一个回调方法</p>
-<ul>
-<li>运行中的容器有很多内存的状态（如开放文件描述符、网络套接字、应用程序数据结构、缓存的数据）。</li>
-<li>我们使用开源的linux工具CRIU来checkpoint和dump这些状态到文件中，之后我们就可以迁移并恢复这些文件。<ul>
-<li>在检查期间，CRIU将一个正在运行的容器冻结，以保证一致性；</li>
-<li>然后把它的内存状态转存到一系列文件中。转存的总大小取决于进程的页映射的大小。（例如，一个MySQL的容器在它初始化之后立即被检查，创建一个页映射的转存，大小为117MB，所有其他资源的转存文件占250KB。）</li>
-<li><strong><em>checkpoint内存的时间被计入应用程序的宕机时间，因此优化它很重要。</em></strong><ul>
-<li>在Voyager中，我们使用<em>tmpfs</em>来存储转存文件，以避免任何更慢的磁盘事务。</li>
-<li>我们进一步使用CRIU的pagemap server模型，在这个模型中，在checkpoint的时候，pagemap镜像会被直接转存到目标主机上，因此可以避免源主机的存储跳跃。CRIU同样提供了一个叫做<em>action script</em> 动作脚本的结构，它可以允许在一个容器被checkpoint之后和解冻之前执行任意脚本。<strong>我们在<em>action script</em> 动作脚本中提供了一个回调方法</strong>，用来通知Voyager checkpoint的状态，以便Voyager可以执行某个清楚的检查，之后停止源主机上的容器，并将其在目标主机上恢复。</li>
-<li>一旦容器初始化之后，Voyager在目标主机上启动一个lazy migration进程，会在后面描述。</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-<h3 id="B-本地文件系统迁移"><a href="#B-本地文件系统迁移" class="headerlink" title="B. 本地文件系统迁移"></a>B. 本地文件系统迁移</h3><p><strong><em>关于迁移时应用程序的停机时间的一个最重要的贡献因素是数据复制。</em></strong></p>
-<p>已经有一些优化技术：</p>
-<p>转移增量的文件系统快照，并执行实际的失败（当增量的变化足够小的时候）。</p>
-<p>缺陷：<br>​    </p>
-<ul>
-<li>对于数据密集型应用，寻找这样的一个优化的变化窗口可能会很难。</li>
-<li>这样的技术更适合有计划的虚拟机迁移，因为实际的迁移可能会过段时间再进行。对于容器，它们在本质上非常灵活，其生命周期与虚拟机相比要相对更短。</li>
-</ul>
-<p>这一部分的主要工作：Voyager当前的目标在于对其进行“及时的（jit）”迁移。通过在源和目标主机之间使用双频带数据传输：借助数据联合实现带内传输，借助懒散复制实现带外传输。</p>
-<h4 id="1）数据联合"><a href="#1）数据联合" class="headerlink" title="1）数据联合"></a>1）数据联合</h4><p>++这里的目标++是要使源主机上的容器数据在目标主机上可访问，而不需要实际地预先复制任何数据，这样的联合逻辑使得迁移的容器的远程读和本地写成为可能。<br>Voyager用一个在源主机和目的主机之间的文件系统的联合挂载来实现数据联邦。这个联合的停机时间为零，因为它在内存checkpoint之前被编排。一旦它的内存状态被在目标主机上恢复，这个容器就可以通过联合挂载的 <em>rootfs</em> 访问它的持久性数据。</p>
-<p><strong>如图1：</strong></p>
-<ol>
-<li>首先，一个容器的 <em>rootfs</em>（如 <em>/var/contA</em>）是从源主机中导出的网络文件系统（NFS）</li>
-<li>然后将其挂载到目标主机上，作为一个只读的 <em>mnt/nfsA</em>。</li>
-<li>之后在目标主机上建立两个新的文件夹<ul>
-<li><em>/var/lazyStoreA</em> 用来托管懒散复制的数据</li>
-<li><em>/var/active</em> 用来托管任何更新过的或者新写入的数据</li>
-</ul>
-</li>
-<li>使用目标主机的<em>rootfs</em> */var/contA中的AuFS联合挂载文件系统，这三个文件夹会以步骤3中描述的顺序被访问</li>
-<li>Voyager的联合能力在其他联合文件系统中也同样可以应用。</li>
-</ol>
-<ol>
-<li>最初的时候，最下面的NFS目录分支和lazyStore分支都被标记为只读的，只有活跃的分支有读写权限。</li>
-<li>每个由迁移的容器新创建的文件都被托管于active目录。</li>
-<li>任何对现有文件的更新都会首先通过NFS分支转移到active分支，然后再将其本地化更新。因此，这个active分支充当了一个写时复制（CoW）目录。任何进一步的读或更新都被本地化处理。</li>
-<li>唯一一个与active分支或lazyStore分支不符合的文件读取（在下面讨论）是通过NFS路由到源主机文件系统。Voyager使用目标主机中NFS客户端缓存来优化网络中的这些读取。</li>
-</ol>
-<h4 id="2）Lazy-replication"><a href="#2）Lazy-replication" class="headerlink" title="2）Lazy replication"></a>2）Lazy replication</h4><p>一旦容器通过联邦恢复了对数据的访问，Voyager就启动一个lazy replicator，用来在后台转移数据。复制器首先会遍历源主机上的容器的rootfs来计算所有文件的joblist，之后开始将它们复制到lazyStore。我们在active目录中使用了inotify（步骤7，一种文件变化通知机制），用来监控和通知复制器（步骤8）关于已经通过CoW被传输到目标主机上的文件，以便于复制器可以将它们从joblist中移除，从而避免任何冗余的网络副本。复制器最开始会在lazyStore里面用一个临时的名字.filename.part来创建文件，以避免向容器提供一个中间传输的不完整的视图。一旦复制完成，这个文件会被用它的真实名字重命名。任何后续的容器对该文件的读取都由lazyStore支持完成，同时避免NFS分支。当复制器完成所有文件的复制时，最低的NFS分支被从联邦中移除，lazyStore被标记为读写。在这个时候，Voyager将容器迁移标记为完成。</p>
-<h4 id="3）调整"><a href="#3）调整" class="headerlink" title="3）调整"></a>3）调整</h4><p>使用一个双频段传输信道允许系统管理员指定一个流优先于其他流。带外的懒散复制率可以被限制，以避免任何的主要联邦流的网络瓶颈。同样的，如果主机有多个网络端口的话，更快的端口可以被联邦用来挂载NFS，而较慢的可以用来进行懒散的复制。</p>
-<h3 id="C-网络文件系统迁移"><a href="#C-网络文件系统迁移" class="headerlink" title="C. 网络文件系统迁移"></a>C. 网络文件系统迁移</h3><p>对于任何网络文件存储，Voyager简单地执行网络附加存储（NAS）份额的卸载和挂载，伴随着主机访问权限和防火墙配置。类似地，分布式系统部署，借助于它们的设计，使它们很容易迁移。</p>
-<h3 id="D-未来的enhancements"><a href="#D-未来的enhancements" class="headerlink" title="D. 未来的enhancements"></a>D. 未来的enhancements</h3><p>有很多正在进行的努力，来进一步减小应用程序的停机时间，并且包含了下列特征：<br>1）在Voyager，应用程序的停机时间只会在内存检查点/恢复时发生，而数据复制是不会引起停机时间的。因此，我们正在探索减小pagemap大小的方法，通过在检查点之前进行页面刷新（同步）或者其他应用特定的容器内部的垃圾回收。同样，对于特定的冗余资源选择性地放弃检查点可能会有很大帮助。<br>2）现在的Voyager实现了恰好及时地迁移。我们最近刚刚将CRIU的增量内存检查点能力合并到Voyager当中，我们计划讲这些改变提交回与runc OCI一致的运行时间。同时，我们也在探索对计划的迁移进行增量磁盘检查点。<br>3）对于带外的懒散复制，我们计划去提供一个过滤器，可以用来使用户为文件模式指定常规的表达式。例如，*.log，tmp*。这些文件会在复制的时候被忽略掉，以避免冗余的网络传输。</p>
-<h1 id="评估"><a href="#评估" class="headerlink" title="评估"></a>评估</h1><p>实验设置：我们将我们的实验构建与两台Ubuntu 14.04.5 LTS虚拟机上，分别作为容器的源和目标主机。没太虚拟机配置了4个vCPU，4GB的内存以及25GB的磁盘，文件系统是ext4.这些虚拟机是在同一个数据中心里，平均网络带宽是2.5Gbps。我们用docker-runc（借助docker-1.12.3）运行我们的容器，这是一个docker的OCI依从的容器运行时间。对于内存迁移，我们使用最新的CRIU版本2.8。我们从docker hub中选择最流行的有状态的数据库——MySQL5.7.15作为我们的测试应用程序。最后，我们使用标准的雅虎云服务基准（YCSB）基准测试工具来测试MySQL在不同工作量模式下的性能。</p>
-<h2 id="从三个维度来评估Voyager：一致性、应用停机时间和性能开销。"><a href="#从三个维度来评估Voyager：一致性、应用停机时间和性能开销。" class="headerlink" title="从三个维度来评估Voyager：一致性、应用停机时间和性能开销。"></a>从三个维度来评估Voyager：一致性、应用停机时间和性能开销。</h2><h3 id="A-一致性"><a href="#A-一致性" class="headerlink" title="A. 一致性"></a>A. 一致性</h3><p>Voyager是一个对于应用容器的完全的状态迁移解决方案。因此，一旦这个容器被迁移了，保证应用程勋运行时间状态被正确恢复是至关重要的。为了测量一致性，我们设计了两个数据点：</p>
-<p>1）MySQL服务器在开始时执行一系列初始化任务，包括加载配置、初始化数据目录、系统表空间以及相关的管理InnoDB表需要的在内存中的数据结构等。因此，作为第一个数据点，我们在MySQL数据库中插入一些记录，然后用Voyager迁移该容器。然后我们验证一个MySQL客户端可以连接到迁移的服务器并对存在的记录进行查询而不出错。这验证了这个应用及其内存数据结构和持续性表空间可以被一致性地恢复。</p>
-<p>2）对于我们的第二个数据点的评估，我们在同一个MySQL容器中嵌入了一个测试客户端。我们首先在数据库中插入了10K的人的记录，带有从1开始增加的索引1.这个客户端程序由人的索引1和磁盘上的空文件初始化。它有一个周期性的函数，连接数据库，用下一个索引查询一个人的记录（姓名，年龄），将姓名接到文件末尾并修正平均年龄。我们开始这个客户端程序，将这个容器在程序执行过程到一半时迁移，通过与没有迁移的启动的期望输出进行对比，保证每次客户端程序在目标主机上完成任务，并得到准确的统计。</p>
-<h3 id="B-应用停机时间"><a href="#B-应用停机时间" class="headerlink" title="B. 应用停机时间"></a>B. 应用停机时间</h3><p>最小化应用的停机时间是一个生产云中的总要标准，别不为了维持服务水平协议（SLA）和业务连续性。Voyager对于持续性状态的转移没有增加应用程序的停机时间，借助于它的数据联邦和目的主机与源主机之间的懒散的复制来实现。这样的话停机时间只受限于借助于CRIU进行的内存中的状态转移的时间。我们通过检查点和恢复这个容器的内存中的进程转储的时间来测量这个时间。</p>
-<p>检查点：在检查点，CRIU将容器冻结，来保证一致性，并将进程的在内存中的状态转储。在Voyager，我们用一个远程的页服务器来将这个进程的pagemap直接转出到目标主机的tmpfs中。因此，检查点时间包括了收集进程树、冻结它、收集进程的资源（如，文件描述器、内存映射、计时器和线程），并将资源写到转储文件中，借助网络放到远程页服务器上。如图2a中所示，我们在不同阶段验证MySQL容器的检查点时间，这些阶段有着不同的记录数量，结果表现为一个增长的pagemap转储文件大小，从117MB到250MB。检查点时间随着应用程序的内存状态线性增加。在微服务架构中，我们可以期望单个容器的内存用量少于1GB，将检查点时间限制到低于2秒。</p>
-<p>恢复：在恢复阶段，CRIU读取转储的文件，解析共享的资源，复刻进程树并恢复进程资源。图2a展示了MySQL容器的恢复时间。正如我们看到的那样，对于一个小于250MB的转储文件大小，恢复时间在约0.7-0.8秒。<br>因此，在Voyager前一种，总的期望的应用程序停机时间在2-3秒。我们最近将CRIU的增量内存检查点能力包含到Voyager中，这可以显著降低应用程序的停机时间。作为未来的工作，我们计划对这个优化进行评估，并且还要用CRIU来衡量每个资源粒度的检查点和恢复时间，以便我们可以优先考虑和优化个人资源。</p>
-<h3 id="C-性能开销"><a href="#C-性能开销" class="headerlink" title="C. 性能开销"></a>C. 性能开销</h3><p>在Voyager中，一旦一个容器在目标主机上继续了，它就立即对其持续性数据存储有了访问权限，通过Voyager的数据联邦层，这个层会引发性能开销，我们用YCSB来测量不同类型的工作量profile，包括读、插入、更新和浏览。对于每个profile，在YCSB的加载阶段，我们在一个数据库表中插入1M的数据，之后在运行阶段，我们进行1M记录的各类型的操作。这些记录是使用基于流行的长尾访问模式的齐夫定律分发来访问的。对于每个工作量profile，我们每10秒测量一次平均应用吞吐量（操作数/秒）。每个实验在两个应用状态执行：</p>
-<p>1）基准线：迁移前源主机的应用程序状态</p>
-<p>2）联邦：迁移后在目标主机上的应用程序状态，可以通过联邦层访问数据。<br>对于普通的应用程序的读写工作量模式，我们观察稳定状态的到0~3%的开销。对单个工作量profile的性能影响的讨论如下：</p>
-<ul>
-<li><p>读</p>
-<p>  图2c展示了数据读取的基准测试结果。最开始的时候较低的吞吐量是因为是在缓存预热阶段，之后到了稳定状态阶段，我们观察到相对稳定的性能。每个通过联邦层读取操作都通过NFS进行对源主机的数据的访问。结果，在联邦阶段，读取吞吐量在缓冲预热时下降了约20%，在稳定阶段下降了约1%。</p>
-</li>
-<li><p>扫描</p>
-<p>  图2d展示了扫描的结果。与读取不同，读取中一个zipfian模式会频繁访问受欢迎的记录，而扫描中会按顺序访问记录，从一个随机选择的记录的键开始，生成更加独特的读取请求。因此，即使在稳定阶段，对于NFS中的读取访问，我们也记录了一个约10%的性能开销。</p>
-</li>
-<li><p>更新</p>
-<p>  在联合状态，一个更新操作本质上是一个写时复制的操作，即一个文件通过NFS被从源主机上读取，然后在目标主机上复制，之后本地更新。MySQL通过分开的.ibd数据文件存储InnoDB表和索引。因此，在联邦状态，当一个记录被更新时，各自的索引和表空间文件在目标主机上被写时复制了。之后，每个后续的对该记录的更新都被本地化完成。结果如图2e，我们观察到，在开始的时候有一个约75%的性能开销，而在稳定状态更新性能与基准线持平。</p>
-</li>
-<li><p>插入</p>
-<p>  在联合状态，每个写操作都导致新文件的生成在本地进行。因此我们观察到了基准线和联邦状态的相似的性能结果，如图2f。表的大小会将索引插入的速度减慢logN（假设是B+树索引），因此对于两个状态都观察到了稳定的性能下降。</p>
-</li>
-<li><p>读取/更新/插入</p>
-<p>  在这个profile中，我们将IP工作量分成60:20:20，对应读取:更新:插入。如图2b，我们观察到，在最开始的时候，由于更新时的文件复制和NFS对读取的访问，性能开销约为65%，而稳定状态约为3%。</p>
-</li>
-</ul>
-<h3 id="D-应用容器：-启动和恢复"><a href="#D-应用容器：-启动和恢复" class="headerlink" title="D. 应用容器： 启动和恢复"></a>D. 应用容器： 启动和恢复</h3><p>与VM对比，容器有更快的启动时间。但是，容器中的应用程序同样也会有它们自己的启动或初始化时间，这个时间范围可能从毫秒到几秒。我们测量两个应用的平均初始化时间，即MySQL和elasticsearch。两个应用的平均初始化时间分别为：MySQL：10s，elasticsearch：7s。之后我们对这些应用容器再起初始化后立即进行检查点操作，并在同一主机上恢复它们。两个的恢复时间都少于500ms，远小于它们的启动时间。在有些平台上，应用程序会通过恢复它们的状态来初始化，而rootfs被通过数据联邦和懒散复制提供，我们正在探索将Voyager应用于这些平台上。</p>
-<h1 id="结果"><a href="#结果" class="headerlink" title="结果"></a>结果</h1><p>实验表明：</p>
-<ul>
-<li>数据更新/写入期间无开销</li>
-<li>读 1%</li>
-<li>扫描 10%</li>
-</ul>
-<h1 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h1><p>我们展示了本工作中Voyager的设计和实现。Voyager在用了一个跨源和目标主机的数据联合，以保证应用程序可以在目标主机上“恰好及时地”继续进行，过程中有远程读数据和本地写数据的访问。这样一个联合框架的性能开销经过估计，对于普通的读写工作量，开销在1-3%内。我们致力于开源以及进一步优化我们的工作以支持容器的增量迁移，优化内存检验知识/回复和设计策略驱动的懒散复制以降低网络开销。</p>
-<h1 id="相关资料"><a href="#相关资料" class="headerlink" title="相关资料"></a>相关资料</h1><p>关于pre-copy和post-copy：<a href="http://www.infoq.com/cn/articles/container-live-migration" target="_blank" rel="external">http://www.infoq.com/cn/articles/container-live-migration</a></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/03/21/Live-Video-Analytics-at-Scale-with-Approximation-and-Delay-Tolerance-NSDI-2017/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="icestrawberryxjw">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="icestrawberryxjw">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/03/21/Live-Video-Analytics-at-Scale-with-Approximation-and-Delay-Tolerance-NSDI-2017/" itemprop="url">Live Video Analytics at Scale with Approximation and Delay-Tolerance(NSDI2017)</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-21T23:39:09+08:00">
-                2018-03-21
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/科研论文笔记/" itemprop="url" rel="index">
-                    <span itemprop="name">科研论文笔记</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>版权声明：本文为 Jiawei Xu 于2018年3月21日所写，未经允许不得转载。</p>
-<h2 id="概括"><a href="#概括" class="headerlink" title="概括"></a>概括</h2><ul>
-<li>研究对象： video cameras、监控视频</li>
-<li>一个视频分析系统 —— 处理上千条实况视频流的分析查询</li>
-<li>侧重于资源管理</li>
-<li>考虑了视频分析的两个特性：<ul>
-<li>多维配置条件下的资源质量权衡</li>
-<li>质量和延迟目标的多样性</li>
-</ul>
-</li>
-<li>系统组成分为两个部分<ul>
-<li>offline profiler：生成查询 resource-quality profile</li>
-<li>online scheduler：为查询分配资源 来 maximize performance on quality and lag</li>
-</ul>
-</li>
-</ul>
-<h2 id="问题背景"><a href="#问题背景" class="headerlink" title="问题背景"></a>问题背景</h2><p><strong>主要需求</strong>：对实况视频流的高效分析</p>
-<p><strong>现状</strong>：</p>
-<ul>
-<li>有大量的集群在分析实况视频</li>
-<li>监控摄像头和集群之间的带宽足够</li>
-<li>不同的场景下分析的需求不同，例如：<ul>
-<li>有些需要跑很长时间：为控制交通信号灯持续时间，统计汽车数量</li>
-<li>有些是短时间的爆发：读取AMBER警报中的车辆牌照（注：美国城市中识别儿童绑架者警报）</li>
-</ul>
-</li>
-<li>视频分析的资源需求很高<ul>
-<li>目标跟踪：the best tracker in the VOT Challenge处理的效率很低</li>
-<li>最精确的深度神经网络对对象识别需要30GFlops来处理一帧</li>
-</ul>
-</li>
-</ul>
-<p>由于处理代价大和视频流速度高，视频分析查询的资源管理很重要。</p>
-<h2 id="related-work"><a href="#related-work" class="headerlink" title="related work"></a>related work</h2><p>流处理生产系统Storm、StreamScope、Flink, Trill and Spark Streaming和集群管理器Yarn and Mesos 的对多查询的资源分配方式是：<br><strong>only based on resource fairness</strong></p>
-<p>产生的问题是：尽管简单, 但是对查询质量和延迟不可知导致 fair sharing 很难实现</p>
-<h2 id="研究过程"><a href="#研究过程" class="headerlink" title="研究过程"></a>研究过程</h2><p>考虑了视频分析的两个特性：</p>
-<h3 id="1-资源质量权衡"><a href="#1-资源质量权衡" class="headerlink" title="1. 资源质量权衡"></a>1. 资源质量权衡</h3><h4 id="一些定义："><a href="#一些定义：" class="headerlink" title="一些定义："></a>一些定义：</h4><ul>
-<li><p><strong>knobs：视觉算法包括各种各样的参数</strong></p>
-<p>  Example of knobs：</p>
-<ol>
-<li>video resolution：视频分辨率</li>
-<li>frame rate：帧频</li>
-<li>internal algorithmic parameters,such as the size of the sliding window to search for objects in object detectors：内部算法的参数，例如在对象检测器中搜索对象的滑动窗口大小</li>
-</ol>
-</li>
-<li><p><strong>a query configuration（一个查询配置）：</strong> </p>
-<p>  knob值的组合，配置的空间随knob的个数成指数级增长。可以通过改变配置减少资源需求（例如，改变分辨率和滑动窗口大小）但是同时也会降低输出质量。</p>
-</li>
-</ul>
-<h3 id="2-质量和时延目标的多样性"><a href="#2-质量和时延目标的多样性" class="headerlink" title="2. 质量和时延目标的多样性"></a>2. 质量和时延目标的多样性</h3><p>不同的查询需要的实时产生结果，但是有些允许有延迟。这就允许在资源短缺期间临时重新分配来自可以容忍延迟的查询的一些资源。</p>
-<p>视频分析查询有不同的质量、延迟要求:</p>
-<ul>
-<li>统计汽车数量来控制红绿灯：moderate quality (approximate car counts)、low lag</li>
-<li>收费公路上的车牌号阅读器：high quality、tolerate lag</li>
-<li>AMBER Alerts的车牌阅读器：high quality、no lag</li>
-</ul>
-<h3 id="3-处理查询的过程分析"><a href="#3-处理查询的过程分析" class="headerlink" title="3. 处理查询的过程分析"></a>3. 处理查询的过程分析</h3><p>提交视频分析查询–&gt;转换,即对输入视频的帧进行视觉信号处理</p>
-<p>generated profiles + lag and quality goals——&gt;(经scheduler) allocate resources, pick configuration(knob values) </p>
-<p><strong>难点：</strong></p>
-<ol>
-<li>对一个查询配置的资源需求和质量的无分析模型，可选配置数量太多</li>
-<li>对于单个查询的质量和延迟目标的表达，以及集群中的所有查询的质量和延迟目标的表达都是非平凡的。 </li>
-<li>决定资源分配和配置是一个在计算上的难度与查询和knob数量呈指数型关系。</li>
-</ol>
-<h2 id="Solution"><a href="#Solution" class="headerlink" title="Solution"></a>Solution</h2><h3 id="Offline-profiler："><a href="#Offline-profiler：" class="headerlink" title="Offline profiler："></a>Offline profiler：</h3><ul>
-<li>没有穷举整个配置组合空间</li>
-<li>采用贪心搜索、特定区域取样</li>
-<li>使用profilers的Pareto boundary来计算knob configurations</li>
-</ul>
-<p><strong>一些定义：</strong></p>
-<ol>
-<li>utility function:<br> encode quality and lag goals of a query<br> Utility = achieved quality 和lag 的加权组合 + penalties for     violating the goals<br> penalties允许查询有优先级<br> 一个集群所有查询的性能目标是：使得最小的utility最大化（实现公平：max-min） / 最大化总的utility（实现性能）</li>
-<li>Lag<br> 最后到达的帧的时间与最后处理的帧的时间差</li>
-<li>quality<br> F1 score属于[0.1]（精确度和查全率的调和平均数） with reference to a labeled ground truth</li>
-</ol>
-<h4 id="如何估计资源-质量profile"><a href="#如何估计资源-质量profile" class="headerlink" title="如何估计资源-质量profile"></a>如何估计资源-质量profile</h4><ol>
-<li>用户提交一个新的查询之后，首先立刻运行一个默认profile（曾在别的摄像头上使用过）</li>
-<li>同时将这条查询运行offline profiling phase</li>
-<li>查询profiler有两个目标：<ul>
-<li>从资源-质量空间中，选择配置的小的子集（Pareto boundary）</li>
-<li>计算查询profile， P~k~，即选择配置的资源需求和结果质量</li>
-<li>profile根据一个贴了标签的数据集计算或者使用这个视频的原始部分，与一个黄金查询配置有关</li>
-</ul>
-</li>
-</ol>
-<h3 id="online-scheduler："><a href="#online-scheduler：" class="headerlink" title="online scheduler："></a>online scheduler：</h3><p>任务：</p>
-<ul>
-<li>预测延迟——使用Model-Predictive Control来预测未来一段时间的查询延迟</li>
-<li>在utility function中使用这个预测延迟</li>
-<li>考虑落后的查询的catch up</li>
-<li>处理在资源-质量profiles中对于资源使用不可避免的不准确</li>
-</ul>
-<p>主要做的事情是资源管理，考虑当个查询和集群范围的性能目标，周期性的做两件事：资源分配和查询安排</p>
-<ul>
-<li>periodically (e.g.,every second)<ul>
-<li>considers all running queries</li>
-<li>adjusts their resource allocation, machine placement, and configurations based on their profiles</li>
-<li>changes in demand and/or capacity (see Figure 4)</li>
-</ul>
-</li>
-<li>We encode the quality and lag requirements of each individual query into its utility function</li>
-<li>The performance goal across all queries in a cluster is specified either as maximizing the minimum utility or the sum of utilities</li>
-</ul>
-<h4 id="1-资源分配阶段"><a href="#1-资源分配阶段" class="headerlink" title="1. 资源分配阶段"></a>1. 资源分配阶段</h4><p>调度器假设集群是一个资源集合，使用一个有效的启发式算法调整查询分配和配置来最大化集群范围上的性能</p>
-<p>总体功能：</p>
-<blockquote>
-<p>Given a profile P~k~ and a utility function U~k~ for each query k, the scheduler allocates resources a~k~ to the queries and picks their query configuration (c~k~ 属于 P~k~).</p>
-</blockquote>
-<p><strong><em>The scheduler runs periodically (e.g., every few seconds) and reacts to arrival of new queries, changes in query demand and lag, and changes in resource capacity (e.g., due to other highpriority non-VideoStorm jobs).</em></strong></p>
-<p>如果分配的资源比查询的需求少的化，查询延迟会随着时间累计，因此目标是提高未来一段时间的性能。</p>
-<ul>
-<li>建模</li>
-</ul>
-<p>使用Model—Predictive Control（MPC）框架公式化这个调度问题。<br>一段时间范围<em>T</em>的集群性能 设为 查询配置和分配的函数。</p>
-<p>每一步都选择配置和分配来最大化未来的性能。</p>
-<p>为了预测未来的性能，需要预测查询的延迟。将预测延迟放入效用方程中来获得预测效用。</p>
-<ul>
-<li>调度启发法<ul>
-<li>最大化效用和是一个背包问题 </li>
-</ul>
-</li>
-</ul>
-<h4 id="2-查询安排阶段"><a href="#2-查询安排阶段" class="headerlink" title="2. 查询安排阶段"></a>2. 查询安排阶段</h4><p>调度器将新的查询安排给集群中的机器，考虑迁移现有的查询</p>
-<h3 id="starting-point-for-solution"><a href="#starting-point-for-solution" class="headerlink" title="starting point for solution"></a>starting point for solution</h3><p>一开始考虑streaming databases with approximation</p>
-<ul>
-<li>这种方法只考虑了数据流的采样率，用建立好的分析模型计算质量和资源需求</li>
-<li>视觉查询是负责的黑盒，有很多knob，没有已知的分析模型</li>
-<li>一次只优化一个查询（本文调度多个并发查询）</li>
-</ul>
-<h2 id="系统设计"><a href="#系统设计" class="headerlink" title="系统设计"></a>系统设计</h2><h3 id="VideoStorm-集群包括："><a href="#VideoStorm-集群包括：" class="headerlink" title="VideoStorm 集群包括："></a>VideoStorm 集群包括：</h3><ul>
-<li>a centralized manager：包括profiler和scheduler</li>
-<li>a set of worker machines: execute queries，解码视频、提取背景探测目标、发送给别的机器跟踪和分类（假设监控摄像头到几群的带宽足够）<ul>
-<li>every runs a machine manager: 启动worker progress来进行变换；周期想VideoStorm Manager 汇报资源利用率以及正在运行的变换的状态。scheduler用这些信息为查询分配资源。</li>
-<li>VideoStorm Manager和machine Manager不在查询data path上，在控制流</li>
-</ul>
-</li>
-<li>a query: 一个实况视频的DAG变换，每个变换处理一个时间顺序信息流并将其传输到下一级<ul>
-<li>每个变换包括一个id和class_name, input_transform_id指定该变换的输入来源。</li>
-<li>Source transforms，例如Decoder，不指定input transform，直接与监控摄像头相连（指定IP和端口）</li>
-<li>每个变换包括可选的knobs或者说parameters，例如：<ul>
-<li>车牌的最大最小窗口大小</li>
-<li>OpenALPRazolam变换的搜索的步长（the step increments to search between these sizes for the OpenALPR transform）</li>
-<li>值可以动态更新的knobs以@符号开头</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>scheduler：performance-based scheduling<ol>
-<li>尽量给质量能提高多的查询分配更多的资源</li>
-<li>运行有built-up lag的查询在处理过程中catch up</li>
-<li>根据分配的资源调整查询配置</li>
-</ol>
-</li>
-</ul>
-<h3 id="现实生活中的视频查询"><a href="#现实生活中的视频查询" class="headerlink" title="现实生活中的视频查询"></a>现实生活中的视频查询</h3><p>四种现实生活查询场景的资源-质量profiles：</p>
-<h4 id="1-车牌阅读器查询"><a href="#1-车牌阅读器查询" class="headerlink" title="1. 车牌阅读器查询"></a>1. 车牌阅读器查询</h4><h5 id="profile"><a href="#profile" class="headerlink" title="profile"></a>profile</h5><ul>
-<li>帧分辨率和采样率是重要的knob</li>
-<li>使用OpenALPR library</li>
-<li>用MinSize扫描车牌图像-&gt;积性增加大小-&gt;重复这一过程直到达到MaxSize</li>
-</ul>
-<ul>
-<li>本文使用F1 score在一个贴了标签的数据集上估算了每种knob配置的质量（F1 score是准确度和查全率的调和平均数，在机器学习中很常用）</li>
-<li>0和1 代表了最低和最高质量</li>
-</ul>
-<p>10分钟视频、414种配置车牌查询资源-质量 花了 20天</p>
-<h5 id="配置的贪心探索"><a href="#配置的贪心探索" class="headerlink" title="配置的贪心探索"></a>配置的贪心探索</h5><p>爬山法得到baseline profiler</p>
-<p>online profiler= baseline profiler k=3 cache imtermediate results in the query’s DAG and reuse them in evaluating configurations with overlapping knob values</p>
-<p><strong>Pareto boundary</strong></p>
-<p>online profiles最上面的黑线</p>
-<h4 id="2-汽车计数器"><a href="#2-汽车计数器" class="headerlink" title="2. 汽车计数器"></a>2. 汽车计数器</h4><p>即使分辨率和采样率低，结果通常质量高</p>
-<h4 id="3-DNN分类器"><a href="#3-DNN分类器" class="headerlink" title="3. DNN分类器"></a>3. DNN分类器</h4><ul>
-<li>包括对象探测和分类</li>
-<li>使用ImageNet数据集，将对象分为1000类</li>
-</ul>
-<p><strong>another knob——compression factor</strong><br>​    </p>
-<h4 id="4-对象跟踪"><a href="#4-对象跟踪" class="headerlink" title="4. 对象跟踪"></a>4. 对象跟踪</h4><ul>
-<li>抽象背景、识别前景对象，在多帧之间使用mapping metric（<strong>a key knob</strong>） 跟踪对象<ul>
-<li>Objects across frames can be mapped to each other using metrics such as distance moved (DIST), color histogram similarity (HIST), or matched over SIFT and SURF features.</li>
-</ul>
-</li>
-</ul>
-<h2 id="部署"><a href="#部署" class="headerlink" title="部署"></a>部署</h2><p>部署在一个有101台机器的Azure集群上</p>
-<ul>
-<li>offline 3.5* less CPU</li>
-</ul>
-<h2 id="结果"><a href="#结果" class="headerlink" title="结果"></a>结果</h2><ul>
-<li>上千条查询——几百毫秒</li>
-<li>80% in quality of real-world queries</li>
-<li>7* better lag</li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/09/25/hello-world/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="icestrawberryxjw">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="icestrawberryxjw">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/09/25/hello-world/" itemprop="url">Hello World</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-09-25T14:43:15+08:00">
-                2017-09-25
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="external">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="external">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="external">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="external">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo new <span class="string">"My New Post"</span></div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="external">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo server</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="external">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo generate</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="external">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo deploy</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="external">Deployment</a></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span>
+    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/3/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -2788,7 +2591,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">20</span>
+                  <span class="site-state-item-count">23</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -2799,7 +2602,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">13</span>
+                  <span class="site-state-item-count">14</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -2810,7 +2613,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-count">12</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
